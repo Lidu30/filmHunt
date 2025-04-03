@@ -19,7 +19,7 @@ const model = {
     this.userDetails = { ...this.userDetails, ...details };
     /*  model.setUserDetails({ id: "12345", phone: "1234567" });
     u set it like this 
-    we'll assign the id ourselves*/
+    we'll assign the id ourselves */
   },
 
   /* setUserEmail(email) {
