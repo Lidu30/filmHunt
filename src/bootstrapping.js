@@ -9,6 +9,3 @@ export const reactiveModel = observable(model);
 global.myModel = reactiveModel; // make application state available in Console
 
 connectToPersistence(reactiveModel, reaction); 
-
-// const firestoreDoc= doc(db, "test collection", "test document")
-// setDoc(firestoreDoc, {dummyField: "dummyValue"}, {merge:true})

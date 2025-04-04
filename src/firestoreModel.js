@@ -16,21 +16,23 @@ const COLLECTION = "filmHunt"
 
 export function connectToPersistence(model, watchFunction) {
     function getModelStateACB() {
-        return [/* model.numberOfGuests, model.dishes, model.currentDishId */]
+        return [ model.watchList, 
+                model.userDetails.name,
+                userDetails.email,
+                userDetails.phone
+            ]
     }
 
-    
     function persistenceModelACB() {
         const refObject = doc(db, COLLECTION, "modelData")
         if (model.ready) {
             setDoc(
                 refObject,
                 {
-                /*
-                numberOfGuests: model.numberOfGuests,
-                dishes: model.dishes,
-                currentDishId: model.currentDishId,
-                */
+                watchlist: model.watchlist,
+                userDetailsName: model.userDetails.name,
+                userDetailsEmail: userDetails.email,
+                userDetailsPhone: userDetails.phone
                 },
                 { merge: true },
             )
@@ -45,21 +47,21 @@ export function connectToPersistence(model, watchFunction) {
     } 
 
     function readyACB(docSnap) {
+        console.log("Firestore document snapshot:", docSnap.exists(), docSnap.data());
+
         const data = docSnap.data();
         if (data) {
-            /*
-            model.numberOfGuests = data.numberOfGuests || 2;
-            model.dishes = data.dishes || [];
-            model.currentDishId = data.currentDishId || null;
-            */
+            model.watchlist = data.watchlist || [];
+            model.userDetails.name = data.userDetailsName;
+            model.userDetails.email = data.userDetailsEmail;
+            model.userDetails.phone = data.userDetailsPhone;
         } else {
-            /*
-            model.numberOfGuests = 2;
-            model.dishes = [];
-            model.currentDishId = null;
-            */
+            model.watchlist = [];
+            model.userDetails.name = "DummyName";
+            model.userDetails.email = "dummy@email.com";
+            model.userDetails.phone = "123456789";
         }
-        model.ready = true;   
+        model.ready = true;
     }
 
     watchFunction(getModelStateACB, persistenceModelACB);
@@ -67,5 +69,10 @@ export function connectToPersistence(model, watchFunction) {
     model.ready = false
 
     const refObject = doc(db, COLLECTION, "modelData");
-    getDoc(refObject).then(readyACB).catch(errorACB);    
+    getDoc(refObject).then(readyACB).catch(errorACB);
 }
+
+const firestoreDoc= doc(db, "filmHunt", "modelData")
+setDoc(firestoreDoc, {dummyField: "dummyValue"}, {merge:true})
+    // .then(() => console.log("Document written successfully!"))
+    // .catch(error => console.error("Error writing document:", error));
