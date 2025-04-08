@@ -4,7 +4,7 @@ import { Text } from "react-native"
 import { observer } from "mobx-react-lite"
 import { reactiveModel } from "src/bootstrapping";
 
-import { SuspenseView } from "src/views/suspenseView";
+import { SuspenseView } from "../views/suspenseView";
 
 export default
 observer(
