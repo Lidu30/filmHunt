@@ -8,6 +8,12 @@ const model = {
     email: "",
     phone: "",
   },
+  currentMovie: null,
+
+  setCurrentMovie(movie) {
+    this.currentMovie = movie;
+    console.log(this);
+  },
 
   setUsername(username) {
     this.username = String(username);

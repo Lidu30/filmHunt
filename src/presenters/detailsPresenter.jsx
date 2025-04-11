@@ -3,6 +3,9 @@ import { DetailsView } from "src/views/detailsView";
 import { SuspenseView } from "src/views/suspenseView";
 
 export const Details = observer(function Details(props) {
+
+    const currentMovie = props.model.currentMovie
+
     const currentDishPromiseState = props.model.currentDishPromiseState;
     // const isDishInMenu = !!props.model.dishes.find(checkDishInMenu)
 
@@ -16,6 +19,7 @@ export const Details = observer(function Details(props) {
 
     // if (currentDishPromiseState.data) {
         return <DetailsView
+            movie = {currentMovie}
             /*
             dishData = {currentDishPromiseState.data}
             guests = {props.model.numberOfGuests}
