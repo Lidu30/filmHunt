@@ -14,11 +14,7 @@ function RootLayout() {
     return <Text>🍽</Text>
   }
 
-  function renderSearchTabIconACB() {
-    return <Text>🔍</Text>
-  }
-
-  function renderSummaryTabIconACB() {
+  function renderWatchListTabIconACB() {
     return <Text>📝</Text>
   }
 
@@ -35,18 +31,12 @@ function RootLayout() {
           tabBarIcon: renderIndexTabIconACB,
         }}
       />
+    
       <Tabs.Screen
-        name="search"
+        name="watchList"
         options={{
-          title: "Search",
-          tabBarIcon: renderSearchTabIconACB,
-        }}
-      />
-      <Tabs.Screen
-        name="summary"
-        options={{
-          title: "Summary",
-          tabBarIcon: renderSummaryTabIconACB,
+          title: "WatchList",
+          tabBarIcon: renderWatchListTabIconACB,
         }}
       />
       <Tabs.Screen

@@ -4,6 +4,7 @@ import { model } from "./model";
 import { observer } from "mobx-react-lite";
 
 import { Details } from "../presenters/detailsPresenter"
+import { WatchList } from "../presenters/watchListPresenter"
 
 // TODO pass reactive model down to presenters
 const IndexPage = observer(() => {
@@ -13,7 +14,9 @@ const IndexPage = observer(() => {
       <Text>{reactiveModel.username}</Text> 
       <Button title="Test" onPress={() => console.log(model)} />
 
-      <Details model = {reactiveModel} />
+      {/*<Details model = {reactiveModel} />*/}
+        < WatchList model = {reactiveModel} />
+
     </ScrollView>
   );
 });
