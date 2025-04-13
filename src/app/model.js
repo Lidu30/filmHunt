@@ -12,6 +12,10 @@ const model = {
   // to track the login/authentication state
   user: null,
   
+  setUser(user) {
+    this.user = user;
+  },
+
   setCurrentMovie(movie) {
     this.currentMovie = movie;
     console.log(this);

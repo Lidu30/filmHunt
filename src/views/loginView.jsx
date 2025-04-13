@@ -1,46 +1,81 @@
 import React from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
-const LoginView = ({ username, password, onUsernameChange, onPasswordChange, onLoginPress }) => (
-  <View style={styles.container}>
-    <Text style={styles.title}>Login</Text>
-    <TextInput
-      style={styles.input}
-      placeholder="Email"
-      value={username}
-      onChangeText={onUsernameChange}
-      autoCapitalize="none"
-      keyboardType="email-address"
-    />
-    <TextInput
-      style={styles.input}
-      placeholder="Password"
-      value={password}
-      onChangeText={onPasswordChange}
-      secureTextEntry={true}
-    />
-    <Button title="Login" onPress={onLoginPress} />
-  </View>
-);
+const LoginView = ({ username, password, onUsernameChange, onPasswordChange, onLoginPress }) => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Welcome to FilmHunt</Text>
+      <View style={styles.formContainer}>
+        <Text style={styles.label}>Email</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your email"
+          placeholderTextColor="#888"
+          autoCapitalize="none"
+          keyboardType="email-address"
+          value={username}
+          onChangeText={onUsernameChange}
+        />
+        <Text style={styles.label}>Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your password"
+          placeholderTextColor="#888"
+          secureTextEntry
+          value={password}
+          onChangeText={onPasswordChange}
+        />
+        <TouchableOpacity style={styles.button} onPress={onLoginPress}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+export default LoginView;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#2167b8',
     justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
   },
   title: {
-    fontSize: 24,
-    marginBottom: 20,
-    textAlign: 'center',
+    color: '#ffffff',
+    fontSize: 28,
+    marginBottom: 40,
+    fontWeight: 'bold',
+  },
+  formContainer: {
+    width: '100%',
+  },
+  label: {
+    color: '#ffffff',
+    fontSize: 16,
+    marginBottom: 8,
   },
   input: {
-    height: 40,
-    borderColor: 'gray',
+    backgroundColor: '#1e1e1e',
+    color: '#ffffff',
+    borderColor: '#333333',
     borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
+    borderRadius: 4,
+    padding: 12,
+    marginBottom: 20,
+    fontSize: 16,
+  },
+  button: {
+    backgroundColor: '#ffffff',
+    borderRadius: 4,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#000000',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
-
-export default LoginView;

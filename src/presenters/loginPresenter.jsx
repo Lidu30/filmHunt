@@ -2,26 +2,29 @@ import React, { useState } from 'react';
 import { useRouter } from "expo-router";
 import LoginView from '../views/loginView';
 import { reactiveModel } from '../bootstrapping';
-import { runInAction } from 'mobx'; // Add this import
+import { runInAction } from 'mobx';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginPresenter = () => {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  function handleLoginPress() {
-    console.log("Login attempt with:", username);
+  async function handleLoginPress() {
     if (username && password) {
+      // for demonstration, we use the username as the token
+      await AsyncStorage.setItem('userToken', username);
+
       runInAction(() => {
         reactiveModel.setUsername(username);
-        reactiveModel.setUserDetails({ 
+        reactiveModel.setUserDetails({
           name: username, 
-          email: username + "@example.com",
+          email: username,
           phone: ""
         });
-        reactiveModel.setUser({ uid: Date.now().toString(), username });
+        reactiveModel.user = { uid: Date.now().toString(), username };
       });
-      console.log("After login, model.user is:", reactiveModel.user);
+      console.log("After login, reactiveModel.user is:", reactiveModel.user);
       router.replace("/");
     } else {
       alert("Please fill in both the email and password");
@@ -40,4 +43,3 @@ const LoginPresenter = () => {
 };
 
 export default LoginPresenter;
-export { LoginPresenter };
