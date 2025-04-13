@@ -9,6 +9,7 @@ const model = {
     phone: "",
   },
   currentMovie: null,
+  
 
   setCurrentMovie(movie) {
     this.currentMovie = movie;
