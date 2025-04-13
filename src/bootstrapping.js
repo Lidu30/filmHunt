@@ -1,11 +1,24 @@
-import { observable, configure, reaction } from "mobx";
+import { observable, configure, reaction, makeAutoObservable } from "mobx";
 import { connectToPersistence } from "./firestoreModel"
 import { model } from "./app/model.js"
 import { searchMovies } from "/src/apiConfig"
 
-configure({ enforceActions: "always" });
+configure({ enforceActions: "never" });
 // TODO, add a proper model object:
-export const reactiveModel = observable(model);
+export const reactiveModel = makeAutoObservable({
+  ...model,  // Keep all the original model functions and properties
+  ready: false,  // Add the ready property
+  
+  // Add only functions that don't exist in the original model
+  setReady(value) {
+    this.ready = value;
+  },
+  
+  setUser(user) {
+    this.user = user;
+  }
+  });
+
 // TODO side effects, connect to persistence etc
 global.myModel = reactiveModel; // make application state available in Console
 

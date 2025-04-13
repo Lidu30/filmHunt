@@ -9,7 +9,9 @@ const model = {
     phone: "",
   },
   currentMovie: null,
-
+  // to track the login/authentication state
+  user: null,
+  
   setCurrentMovie(movie) {
     this.currentMovie = movie;
     console.log(this);
@@ -50,3 +52,4 @@ const model = {
 };
 
 export { model };
+export default model;

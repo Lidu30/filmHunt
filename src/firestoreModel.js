@@ -4,7 +4,6 @@ import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore"
 import { firebaseConfig } from "src/firebaseConfig.js"
 
 const app = initializeApp(firebaseConfig)
-
 const db = getFirestore(app)
 
 // make doc and setDoc available at the Console for testing
@@ -16,10 +15,10 @@ const COLLECTION = "filmHunt"
 
 export function connectToPersistence(model, watchFunction) {
     function getModelStateACB() {
-        return [ model.watchList, 
-                model.userDetails.name,
-                userDetails.email,
-                userDetails.phone
+        return [ model.watchlist, 
+            model.userDetails.name,
+            model.userDetails.email,
+            model.userDetails.phone
             ]
     }
 
@@ -31,8 +30,8 @@ export function connectToPersistence(model, watchFunction) {
                 {
                 watchlist: model.watchlist,
                 userDetailsName: model.userDetails.name,
-                userDetailsEmail: userDetails.email,
-                userDetailsPhone: userDetails.phone
+                userDetailsEmail: model.userDetails.email,
+                userDetailsPhone: model.userDetails.phone
                 },
                 { merge: true },
             )
@@ -65,9 +64,7 @@ export function connectToPersistence(model, watchFunction) {
     }
 
     watchFunction(getModelStateACB, persistenceModelACB);
-
     model.ready = false
-
     const refObject = doc(db, COLLECTION, "modelData");
     getDoc(refObject).then(readyACB).catch(errorACB);
 }
