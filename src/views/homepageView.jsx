@@ -6,25 +6,37 @@ import {
   Image,
   StyleSheet,
   ActivityIndicator,
+  TextInput,
 } from "react-native";
 
 export const HomepageView = observer(({ moviesarray, isLoading }) => {
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Top Rated Movies</Text>
-
-      {isLoading && <ActivityIndicator size="large" color="#fff" style={{ marginVertical: 20 }} />}
+      <Text style={styles.header}>Home</Text>
+      <View style={styles.searchBarContainer}>
+        <TextInput placeholder="Search movies..." placeholderTextColor="grey" />
+      </View>
+      {isLoading && (
+        <ActivityIndicator
+          size="large"
+          color="#fff"
+          style={{ marginVertical: 20 }}
+        />
+      )}
 
       {moviesarray.map((movie) => (
         <View key={movie.id} style={styles.card}>
           <Image
-            source={{ uri: `https://image.tmdb.org/t/p/w200${movie.poster_path}` }}
+            source={{
+              uri: `https://image.tmdb.org/t/p/w200${movie.poster_path}`,
+            }}
             style={styles.poster}
           />
           <View style={styles.info}>
             <Text style={styles.title}>{movie.title}</Text>
             <Text style={styles.sub}>Released: {movie.release_date}</Text>
             <Text style={styles.sub}>⭐ {movie.vote_average}/10</Text>
+            {/* shoudl round it off */}
             <Text numberOfLines={3} style={styles.overview}>
               {movie.overview}
             </Text>
@@ -34,7 +46,7 @@ export const HomepageView = observer(({ moviesarray, isLoading }) => {
     </ScrollView>
   );
 });
-
+// chatgpt generated styling
 const styles = StyleSheet.create({
   container: {
     padding: 16,
@@ -46,6 +58,15 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     marginBottom: 16,
+  },
+  searchBarContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#222",
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    marginBottom: 20,
+    height: 35,
   },
   card: {
     flexDirection: "row",
