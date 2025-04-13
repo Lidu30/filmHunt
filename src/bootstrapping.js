@@ -1,6 +1,6 @@
 import { observable, configure, reaction, makeAutoObservable } from "mobx";
 import { connectToPersistence } from "./firestoreModel"
-import { model } from "./app/model.js"
+import { model } from "./model.js"
 import { searchMovies } from "/src/apiConfig"
 
 configure({ enforceActions: "never" });

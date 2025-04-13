@@ -11,7 +11,7 @@
     "@react-navigation/native": "^7.1.6",
     "expo": "~52.0.37",
     "expo-image": "~2.0.7",
-    "expo-router": "~4.0.7",
+    "expo-router": "~4.0.20",
     "firebase": "~11.0.2",
     "mobx": "~6.13.5",
     "mobx-react-lite": "~4.0.7",
