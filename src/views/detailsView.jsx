@@ -9,6 +9,7 @@ import {
 import { Image } from "expo-image"
 import { router } from "expo-router"
 // import { getCardStyle } from "../utilities"
+import { reactiveModel } from "../bootstrapping";
   
 export function DetailsView(props) {
 
@@ -16,8 +17,8 @@ export function DetailsView(props) {
         return "https://image.tmdb.org/t/p/w500" + props.movie.poster_path;
     }
 
-    /*<Image 
-                source={posterPathACB} style={styles.image} /> */
+    <Image 
+                source={posterPathACB} style={styles.image} />
 
     return (
         <ScrollView style={styles.base}>

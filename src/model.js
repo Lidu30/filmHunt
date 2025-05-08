@@ -8,7 +8,7 @@ const model = {
     email: "",
     phone: "",
   },
-  currentMovie: null,
+  currentMovie: [],
   // to track the login/authentication state
   user: null,
   

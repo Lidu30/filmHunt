@@ -76,21 +76,21 @@ export default observer(function RootLayout() {
         name="index"  
         options={{
           title: 'Home',
-          tabBarIcon: () => <Text>🍽</Text>,
+          tabBarIcon: () => <Text></Text>,
         }}
       />
       <Tabs.Screen
         name="watchList"  
         options={{
           title: 'WatchList',
-          tabBarIcon: () => <Text>📝</Text>,
+          tabBarIcon: () => <Text></Text>,
         }}
       />
       <Tabs.Screen
         name="details"  
         options={{
           title: 'Details',
-          tabBarIcon: () => <Text>📄</Text>,
+          tabBarIcon: () => <Text></Text>,
         }}
       />
     </Tabs>
