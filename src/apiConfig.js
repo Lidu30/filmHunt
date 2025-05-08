@@ -2,13 +2,15 @@
 export const API_KEY = "3d2a031b4cmsh5cd4e7b939ada54p19f679jsn9a775627d767";
 
 function resultsACB(data) {
-  return data.results;
+  console.log(data);
+  return data;
 }
 
 function gotResponseACB(response) {
   if (response.status !== 200) {
     throw new Error("Error");
   }
+  console.log(response);
   return response.json();
 }
 
