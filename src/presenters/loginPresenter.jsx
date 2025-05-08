@@ -1,45 +1,62 @@
-import React, { useState } from 'react';
-import { useRouter } from "expo-router";
-import LoginView from '../views/loginView';
-import { reactiveModel } from '../bootstrapping';
-import { runInAction } from 'mobx';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState } from "react"
+import { router } from "expo-router"
+import { observer } from "mobx-react-lite"
+import { reactiveModel } from "../bootstrapping"
+import { signIn, connectToPersistence } from "../firestoreModel"
+import { LoginView } from "../views/loginView"
+import { reaction } from "mobx"
 
-const LoginPresenter = () => {
-  const router = useRouter();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+export const LoginPresenter = observer(() => {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
 
-  async function handleLoginPress() {
-    if (username && password) {
-      // for demonstration, we use the username as the token
-      await AsyncStorage.setItem('userToken', username);
-
-      runInAction(() => {
-        reactiveModel.setUsername(username);
-        reactiveModel.setUserDetails({
-          name: username, 
-          email: username,
-          phone: ""
-        });
-        reactiveModel.user = { uid: Date.now().toString(), username };
-      });
-      console.log("After login, reactiveModel.user is:", reactiveModel.user);
-      router.replace("/");
-    } else {
-      alert("Please fill in both the email and password");
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert("Please enter both email and password.")
+      return
     }
+
+    try {
+      await signIn(email, password)
+      await connectToPersistence(reactiveModel, (getState, persist) => {
+        reaction(
+          () => getState(),
+          () => {
+            if (reactiveModel.ready) {
+              persist()
+            }
+          }
+        )
+      })      
+      router.replace("/(tabs)/home")
+    } catch (error) {
+      switch (error.code) {
+        case "auth/user-not-found":
+          alert("No account found with that email. Please sign up first.")
+          break
+        case "auth/wrong-password":
+          alert("Incorrect password. Please try again.")
+          break
+        case "auth/invalid-email":
+          alert("That doesn’t look like a valid email address.")
+          break
+        case "auth/user-disabled":
+          alert("This account has been disabled. Contact support.")
+          break
+        default:
+          alert(error.message || "Login failed. Please try again.")
+      }    }
   }
 
   return (
     <LoginView
-      username={username}
-      password={password}
-      onUsernameChange={setUsername}
-      onPasswordChange={setPassword}
-      onLoginPress={handleLoginPress}
+      user={email}
+      setUser={setEmail}
+      pass={password}
+      setPass={setPassword}
+      login={handleLogin}
     />
-  );
-};
+  )
+})
 
 export default LoginPresenter;

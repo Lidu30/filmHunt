@@ -1,81 +1,93 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React from "react"
+import {
+  StyleSheet,
+  Button,
+  Text,
+  TextInput,
+  View,
+} from "react-native"
+import { Link } from "expo-router"
 
-const LoginView = ({ username, password, onUsernameChange, onPasswordChange, onLoginPress }) => {
+export function LoginView({ user, setUser, pass, setPass, login }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to FilmHunt</Text>
-      <View style={styles.formContainer}>
-        <Text style={styles.label}>Email</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your email"
-          placeholderTextColor="#888"
-          autoCapitalize="none"
-          keyboardType="email-address"
-          value={username}
-          onChangeText={onUsernameChange}
-        />
-        <Text style={styles.label}>Password</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your password"
-          placeholderTextColor="#888"
-          secureTextEntry
-          value={password}
-          onChangeText={onPasswordChange}
-        />
-        <TouchableOpacity style={styles.button} onPress={onLoginPress}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
+      <Text style={styles.heading}>Log In</Text>
 
-export default LoginView;
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="#666"
+        keyboardType="email-address"
+        autoCapitalize="none"
+        value={user}
+        onChangeText={setUser}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        placeholderTextColor="#666"
+        secureTextEntry
+        value={pass}
+        onChangeText={setPass}
+      />
+
+      <View style={styles.buttonWrapper}>
+        <Button
+          title="Log In"
+          onPress={login}
+          color="#0055AA"       
+        />
+      </View>
+
+      <Link href="/signup" style={styles.signupLink}>
+        <Text style={styles.signupText}>
+          Don’t have an account?{" "}
+          <Text style={styles.signupAction}>Sign up</Text>
+        </Text>
+      </Link>
+    </View>
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#2167b8',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
+    padding: 24,
+    justifyContent: "center",
+    backgroundColor: "#E6F2FA",  
   },
-  title: {
-    color: '#ffffff',
+  heading: {
     fontSize: 28,
-    marginBottom: 40,
-    fontWeight: 'bold',
-  },
-  formContainer: {
-    width: '100%',
-  },
-  label: {
-    color: '#ffffff',
-    fontSize: 16,
-    marginBottom: 8,
+    marginBottom: 32,
+    textAlign: "center",
+    color: "#4B2E2A",            
+    fontWeight: "bold",
   },
   input: {
-    backgroundColor: '#1e1e1e',
-    color: '#ffffff',
-    borderColor: '#333333',
+    height: 50,
+    borderColor: "#0055AA",      
     borderWidth: 1,
-    borderRadius: 4,
-    padding: 12,
+    borderRadius: 6,
     marginBottom: 20,
-    fontSize: 16,
+    paddingHorizontal: 12,
+    color: "#000",              
   },
-  button: {
-    backgroundColor: '#ffffff',
-    borderRadius: 4,
-    paddingVertical: 12,
-    alignItems: 'center',
+  buttonWrapper: {
+    marginVertical: 12,
+    borderRadius: 6,
+    overflow: "hidden",         
   },
-  buttonText: {
-    color: '#000000',
-    fontSize: 18,
-    fontWeight: 'bold',
+  signupLink: {
+    marginTop: 24,
+    alignSelf: "center",
   },
-});
+  signupText: {
+    fontSize: 14,
+    color: "#4B2E2A",            
+  },
+  signupAction: {
+    color: "#0055AA",           
+    fontWeight: "bold",
+  },
+})
