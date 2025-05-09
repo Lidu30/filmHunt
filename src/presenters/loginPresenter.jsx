@@ -17,18 +17,7 @@ export const LoginPresenter = observer(() => {
     }
 
     try {
-      await signIn(email, password)
-      await connectToPersistence(reactiveModel, (getState, persist) => {
-        reaction(
-          () => getState(),
-          () => {
-            if (reactiveModel.ready) {
-              persist()
-            }
-          }
-        )
-      })      
-      router.replace("/(tabs)/home")
+      await signIn(email, password)  
     } catch (error) {
       switch (error.code) {
         case "auth/user-not-found":
@@ -54,7 +43,8 @@ export const LoginPresenter = observer(() => {
       setUser={setEmail}
       pass={password}
       setPass={setPassword}
-      login={handleLogin}
+      onLogin={handleLogin}
+      onNavigateToSignup={() => router.push("/signup")}
     />
   )
 })

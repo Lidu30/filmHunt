@@ -1,8 +1,7 @@
 import React, { useState } from "react"
 import { router } from "expo-router"
 import { observer } from "mobx-react-lite"
-import { reactiveModel } from "../bootstrapping"
-import { signUp, connectToPersistence } from "../firestoreModel"
+import { signUp } from "../firestoreModel"
 import { SignupView } from "../views/signupView"
 
 export const SignupPresenter = observer(() => {

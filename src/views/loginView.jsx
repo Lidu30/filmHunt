@@ -8,7 +8,7 @@ import {
 } from "react-native"
 import { Link } from "expo-router"
 
-export function LoginView({ user, setUser, pass, setPass, login }) {
+export function LoginView({ user, setUser, pass, setPass, onLogin }) {
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Log In</Text>
@@ -35,7 +35,7 @@ export function LoginView({ user, setUser, pass, setPass, login }) {
       <View style={styles.buttonWrapper}>
         <Button
           title="Log In"
-          onPress={login}
+          onPress={onLogin}
           color="#0055AA"       
         />
       </View>

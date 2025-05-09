@@ -2,28 +2,26 @@ import React, { useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { router, useNavigation } from "expo-router"
 import { reactiveModel } from "../bootstrapping"
-import { logOut, updateUserProfile, connectToPersistence } from "../firestoreModel"
+import { logOut, connectToPersistence } from "../firestoreModel"
 import { ProfileView } from "../views/profileView"
-import { reaction } from "mobx"
+
 
 export const Profile = observer(() => {
   const navigation = useNavigation()
-
   const [edit, setEdit] = useState(false)
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [phone, setPhone] = useState("")
+  const [name, setName] = useState(reactiveModel.userDetails.name)
+  const [email, setEmail] = useState(reactiveModel.userDetails.email)
+  const [phone, setPhone] = useState(reactiveModel.userDetails.phone)
 
 useEffect(() => {
-    const u = reactiveModel.userDetails || {};
-    setName(u.name || "");
-    setEmail(u.email || "");
-    setPhone(u.phone || "");
+    setName(reactiveModel.userDetails.name || "");
+    setEmail(reactiveModel.userDetails.email || "");
+    setPhone(reactiveModel.userDetails.phone || "");
   }, [
-    reactiveModel.userDetails?.id,
-    reactiveModel.userDetails?.name,
-    reactiveModel.userDetails?.email,
-    reactiveModel.userDetails?.phone,
+    reactiveModel.userDetails.id,
+    reactiveModel.userDetails.name,
+    reactiveModel.userDetails.email,
+    reactiveModel.userDetails.phone,
   ]);
 
   // hiding the tab bar while editing
@@ -59,16 +57,7 @@ useEffect(() => {
   const handleSave = async () => {
     try {
       reactiveModel.setUserDetails({ id: reactiveModel.userDetails.id, name, email, phone })
-      await connectToPersistence(reactiveModel, (getState, persist) => {
-        reaction(
-          () => getState(),           
-          () => {
-            if (reactiveModel.ready) {
-              persist()              
-            }
-          }
-        )
-      })
+      await connectToPersistence()
       setEdit(false)
     } catch (err) {
       alert("Save failed: " + err.message)

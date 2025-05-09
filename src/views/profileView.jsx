@@ -26,9 +26,7 @@ export function ProfileView({
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.heading}>Profile</Text>
-        <Pressable onPress={logout} style={styles.logoutButton}>
-          <MaterialIcons name="logout" size={28} color="#4B2E2A" />
-        </Pressable>
+      
       </View>
 
       <View style={styles.field}>
@@ -79,6 +77,9 @@ export function ProfileView({
           onChangeText={setEmail}
         />
       </View>
+      <View><Pressable onPress={logout} style={styles.logoutButton}>
+          <MaterialIcons name="logout" size={28} color="#4B2E2A" />
+        </Pressable></View>
 
       {edit && (
         <TouchableOpacity style={styles.saveButton} onPress={save}>
@@ -89,6 +90,7 @@ export function ProfileView({
       <Link href="/(tabs)/home" style={styles.backLink}>
         <Text style={styles.backText}>← Home</Text>
       </Link>
+      
     </View>
   )
 }
@@ -117,7 +119,7 @@ const styles = StyleSheet.create({
     padding: 8,
     position: "absolute",
     right: 0,
-    top: 600
+    top: 350
   },
   field: {
     marginBottom: 20,
