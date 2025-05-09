@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
-import { DetailsView } from "src/views/detailsView";
-import { SuspenseView } from "src/views/suspenseView";
+import { DetailsView } from "../views/detailsView";
+import { SuspenseView } from "../views/suspenseView";
 
 export const Details = observer(function Details(props) {
 
