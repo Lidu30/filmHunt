@@ -33,7 +33,7 @@ export const LoginPresenter = observer(() => {
           alert("This account has been disabled. Contact support.")
           break
         default:
-          alert(error.message || "Login failed. Please try again.")
+          alert("Login failed. Please try again.")
       }    }
   }
 
