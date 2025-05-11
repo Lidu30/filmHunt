@@ -1,7 +1,6 @@
 import { observer } from "mobx-react-lite"
-import { reactiveModel } from "src/bootstrapping"
-import { Details } from "src/presenters/detailsPresenter"
-
+import { reactiveModel } from "../../bootstrapping"
+import { Details } from "../../presenters/detailsPresenter"
 
 export default observer(function DetailsPage() {
   return (
