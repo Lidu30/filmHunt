@@ -65,7 +65,7 @@ import {
       );
     }
 
-    if (watchList.length === 0) {
+    if (props.watchList.length === 0) {
       return (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyTitle}>Your watchlist is empty</Text>
@@ -79,7 +79,7 @@ import {
       );
     }
 
-    if (watchList.length === 1) {
+    if (props.watchList.length === 1) {
       return (
         <View style={styles.container}>
           <Text style={styles.watchlistHeader}>Your Watchlist</Text>

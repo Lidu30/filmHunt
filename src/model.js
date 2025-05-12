@@ -54,7 +54,7 @@ const model = {
     this.userDetails.phone = phone;
   }, */
 
-  addToWatchlist(movieId) {
+  addToWatchlist(movie) {
     if (!this.watchlistHas(movie.id)) {
       this.watchlist = [...this.watchlist, movie];
       console.log("Movie added to watchlist:", movie.title);
