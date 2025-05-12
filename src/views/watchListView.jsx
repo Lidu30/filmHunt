@@ -10,83 +10,145 @@ import {
   import { router } from "expo-router";
   
   export function WatchListView(props) {
-  
-    function renderWatchList() {
-      function renderWatchListItem(element) {
-        const movie = element.item;
-  
-        const posterUrl = `https://image.tmdb.org/t/p/w200${movie.poster_path}`;
-  
-        function previewMovieACB() {
-          if (props.movieChosen) {
-            props.movieChosen(movie);
-            router.push("/details");
-          }
-        }
+    function renderWatchListItem(element) {
+      const movie = element.item;
+      if (!movie) return null;
 
-        function deleteMovieACB() {
-          if (props.onDeleteMovie) {
-            props.onDeleteMovie(movie.id);
-          }
+      const posterUrl = movie.poster_path 
+        ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
+        : "https://via.placeholder.com/200x300?text=No+Poster";
+
+      function previewMovieACB() {
+        if (props.movieChosen) {
+          props.movieChosen(movie);
+          router.push("/(tabs)/details");
         }
-  
-        return (
-          <Pressable
-            role="button"
-            style={styles.movieContainer}
-            onPress={previewMovieACB}
-          >
-            <View style={styles.row}>
-              <View style={styles.imageContainer}>
-                <Image style={styles.image} source={{ uri: posterUrl }} />
-              </View>
-              
-              <View style={styles.contentContainer}>
-                <Text style={styles.movieName} numberOfLines={2}>
-                  {movie.title}
-                </Text>
-                <View style={styles.infoContainer}>
-                  <Text style={styles.whereToWatch}>
-                    {movie.whereToWatch}
-                  </Text>
-                  {movie.rating && (
-                    <View style={styles.ratingContainer}>
-                      <Text style={styles.ratingText}>{movie.rating} ★</Text>
-                    </View>
-                  )}
-                </View>
-              </View>
-              <TouchableOpacity style={styles.deleteButton} onPress={deleteMovieACB}>
-                <Text style={styles.deleteButtonText}>×</Text>
-              </TouchableOpacity>
-            </View>
-          </Pressable>
-        );
       }
-  
+
+      function deleteMovieACB() {
+        if (props.onDeleteMovie) {
+          props.onDeleteMovie(movie.id);
+        }
+      }
+
       return (
-        <FlatList
-          data={props.watchList || []}
-          renderItem={renderWatchListItem}
-          keyExtractor={(item) => (item && item.id ? item.id.toString() : Math.random().toString())}
-          numColumns={1}
-          contentContainerStyle={styles.list}
-        />
+        <Pressable
+          role="button"
+          style={styles.movieContainer}
+          onPress={previewMovieACB}
+        >
+          <View style={styles.row}>
+            <View style={styles.imageContainer}>
+              <Image style={styles.image} source={{ uri: posterUrl }} />
+            </View>
+            
+            <View style={styles.contentContainer}>
+              <Text style={styles.movieName} numberOfLines={2}>
+                {movie.title}
+              </Text>
+              <View style={styles.infoContainer}>
+                <Text style={styles.whereToWatch}>
+                  {movie.whereToWatch}
+                </Text>
+                {movie.rating && (
+                  <View style={styles.ratingContainer}>
+                    <Text style={styles.ratingText}>{movie.rating} ★</Text>
+                  </View>
+                )}
+              </View>
+            </View>
+            <TouchableOpacity style={styles.deleteButton} onPress={deleteMovieACB}>
+              <Text style={styles.deleteButtonText}>×</Text>
+            </TouchableOpacity>
+          </View>
+        </Pressable>
+      );
+    }
+
+    if (watchList.length === 0) {
+      return (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyTitle}>Your watchlist is empty</Text>
+          <TouchableOpacity 
+            style={styles.addButton}
+            onPress={() => router.push("/(tabs)/home")}
+          >
+            <Text style={styles.addButtonText}>Browse Movies</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    if (watchList.length === 1) {
+      return (
+        <View style={styles.container}>
+          <Text style={styles.watchlistHeader}>Your Watchlist</Text>
+          {renderWatchListItem({ item: watchList[0] })}
+        </View>
       );
     }
   
-    // Decide which rendering method to use based on props
+
     return (
       <View style={styles.container}>
-        {props.watchList ? renderWatchList() : renderSingleMovie()}
-      </View>
+        <Text style={styles.watchlistHeader}>Your Watchlist</Text>
+          <FlatList
+            data={props.watchList || []}
+            renderItem={renderWatchListItem}
+            keyExtractor={(item) => (item && item.id ? item.id.toString() : Math.random().toString())}
+            numColumns={1}
+            contentContainerStyle={styles.list}
+          />
+       </View>
     );
+    
   }
+
+
   
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: "#f8f8f8",
+    },
+    watchlistHeader: {
+      fontSize: 22,
+      fontWeight: "bold",
+      color: "#333",
+      marginVertical: 16,
+      marginHorizontal: 16,
+    },
+    emptyContainer: {
+      flex: 1,
+      backgroundColor: "#f8f8f8",
+      justifyContent: "center", 
+      alignItems: "center",
+      padding: 20
+    },
+    emptyTitle: {
+      fontSize: 22,
+      fontWeight: "bold",
+      color: "#333",
+      marginBottom: 12,
+    },
+    emptyText: {
+      fontSize: 16,
+      color: "#666",
+      textAlign: "center",
+      lineHeight: 24,
+      marginBottom: 24
+    },
+    addButton: {
+      backgroundColor: "#0055AA",
+      paddingVertical: 12,
+      paddingHorizontal: 24,
+      borderRadius: 8,
+      marginTop: 16
+    },
+    addButtonText: {
+      color: "white",
+      fontSize: 16,
+      fontWeight: "bold"
     },
     list: {
       padding: 10,
@@ -94,6 +156,7 @@ import {
     movieContainer: {
       backgroundColor: "white",
       borderRadius: 8,
+      marginHorizontal: 10,
       marginBottom: 12,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
@@ -161,4 +224,4 @@ import {
       fontWeight: "bold",
       marginTop: -2,
     }
-  });
+  });  

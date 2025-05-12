@@ -55,7 +55,13 @@ const model = {
   }, */
 
   addToWatchlist(movieId) {
-    this.watchlist = [...this.watchlist, movieId];
+    if (!this.watchlistHas(movie.id)) {
+      this.watchlist = [...this.watchlist, movie];
+      console.log("Movie added to watchlist:", movie.title);
+      // we can tell the user that the movie has already been added
+    } else {
+      console.log("Movie already in watchlist:", movie.title);
+    }
   },
 
   removeFromWatchlist(movieId) {
