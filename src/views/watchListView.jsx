@@ -10,84 +10,23 @@ import {
   import { router } from "expo-router";
   
   export function WatchListView(props) {
-    
-    //  just for test
-    function renderSingleMovie() {
-      // Provide defaults for missing props
-      const movie = props.movie || {
-        title: "The Gray Man",
-        poster_path: "",
-        whereToWatch: "Netflix",
-        rating: 4.5
-      }
-  
-      function posterPathACB() {
-        return movie.poster_path ? "https://image.tmdb.org/t/p/w500" + movie.poster_path
-          : "https://via.placeholder.com/100x140"; // Fallback image
-      }
-  
-      function previewMovieACB() {
-        if (props.movieChosen && movie) {
-          props.movieChosen(movie);
-          router.push("/details");
-        }
-      }
-
-      function deleteMovieACB() {
-        if (props.onDeleteMovie) {
-          props.onDeleteMovie(movie.id);
-        }
-      }
-       
-  
-      return (
-        <Pressable
-          role="button"
-          style={styles.movieContainer}
-          onPress={previewMovieACB}
-        >
-          <View style={styles.row}>
-            <View style={styles.imageContainer}>
-              <Image style={styles.image} source={{ uri: posterPathACB() }} />
-            </View>
-            
-            <View style={styles.contentContainer}>
-              <Text style={styles.movieName} numberOfLines={2}>
-                {movie.title || "The Gray Man"} 
-              </Text>
-              <View style={styles.infoContainer}>
-                <Text style={styles.whereToWatch}>
-                  {movie.whereToWatch || "Netflix"}
-                </Text>
-                {movie.rating && (
-                  <View style={styles.ratingContainer}>
-                    <Text style={styles.ratingText}>{movie.rating || 4.5} ★</Text>
-                  </View>
-                )}
-              </View>
-            </View>
-            <TouchableOpacity style={styles.deleteButton} onPress={deleteMovieACB}>
-                <Text style={styles.deleteButtonText}>×</Text>
-            </TouchableOpacity>
-          </View>
-        </Pressable>
-      );
-    }
   
     function renderWatchList() {
       function renderWatchListItem(element) {
         const movie = element.item;
   
-        function posterPathACB() {
-          return movie.poster_path 
-            ? "https://image.tmdb.org/t/p/w500" + movie.poster_path
-            : "https://via.placeholder.com/100x140"; // Fallback image
-        }
+        const posterUrl = `https://image.tmdb.org/t/p/w200${movie.poster_path}`;
   
         function previewMovieACB() {
           if (props.movieChosen) {
             props.movieChosen(movie);
             router.push("/details");
+          }
+        }
+
+        function deleteMovieACB() {
+          if (props.onDeleteMovie) {
+            props.onDeleteMovie(movie.id);
           }
         }
   
@@ -99,24 +38,27 @@ import {
           >
             <View style={styles.row}>
               <View style={styles.imageContainer}>
-                <Image style={styles.image} source={{ uri: posterPathACB() }} />
+                <Image style={styles.image} source={{ uri: posterUrl }} />
               </View>
               
               <View style={styles.contentContainer}>
                 <Text style={styles.movieName} numberOfLines={2}>
-                  {movie.title || "The Gray Man"}
+                  {movie.title}
                 </Text>
                 <View style={styles.infoContainer}>
                   <Text style={styles.whereToWatch}>
-                    {movie.whereToWatch || "Netflix"}
+                    {movie.whereToWatch}
                   </Text>
                   {movie.rating && (
                     <View style={styles.ratingContainer}>
-                      <Text style={styles.ratingText}>{movie.rating || 4.5} ★</Text>
+                      <Text style={styles.ratingText}>{movie.rating} ★</Text>
                     </View>
                   )}
                 </View>
               </View>
+              <TouchableOpacity style={styles.deleteButton} onPress={deleteMovieACB}>
+                <Text style={styles.deleteButtonText}>×</Text>
+              </TouchableOpacity>
             </View>
           </Pressable>
         );

@@ -13,7 +13,7 @@ export const WatchList = observer(function WatchList(props) {
     props.model.removeFromWatchlist(movieId);
   }
 
-  // If you have a watchList in your model, use this:
+  
   if (props.model.watchList && props.model.watchList.length > 0) {
     return (
       <WatchListView 
