@@ -11,11 +11,13 @@ const model = {
   watchlist: [],
   rating: [],
   currentMovie: null,
+  currentMovieGenres: [],
   ready: false,
   genres: [],
  
   setCurrentMovie(movie) {
     this.currentMovie = movie;
+    this.currentMovieGenres = this.getGenreNames(movie.genre_ids)
     console.log(this.currentMovie);
   },
 

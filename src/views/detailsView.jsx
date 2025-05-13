@@ -6,22 +6,22 @@ import {
     StyleSheet,
     Text,
     View,
-} from "react-native"
+  } from "react-native"
 import { router } from "expo-router"
-// import { getCardStyle } from "../utilities"
-import { reactiveModel } from "../bootstrapping";
   
 export function DetailsView(props) {
 
-    function posterPathACB() {
-        console.log("current movie:", props.movie)
-        return "https://image.tmdb.org/t/p/w500" + props.movie.backdrop_path;
+    const movie = props.movie
+
+    function addToWatchlistACB() {
+        // TODO
+        console.log()
     }
 
-    //<Image 
-                //source={posterPathACB} style={styles.image} />
-
-    // <Text style={styles.whiteText}>{console.log(props)}</Text>
+    function posterPathACB() {
+        console.log("current movie:", movie)
+        return "https://image.tmdb.org/t/p/w500" + movie.backdrop_path;
+    }
 
     return (
         <ScrollView style={styles.base}>
@@ -29,41 +29,41 @@ export function DetailsView(props) {
             <Image source={{ uri: posterPathACB() }} style={styles.image} />
 
             <View style={styles.container}>
-                <Text style={styles.whiteText}>{/*Comedy | Thriller | Drama*/} {props.movie.genre_names}</Text>
+                <Text style={styles.grayText}>{props.movieGenres}</Text>
                 <View style={styles.rowBetween}>
-                    <Text style={styles.header}>{props.movie.original_title}</Text>
+                    <Text style={styles.header}>{movie.title}</Text>
                     <Pressable 
                         style={true /* TODO */ ? styles.button : styles.button}
                         role="button"
                         disabled={props.isDishInMenu}
-                        onPress={console.log}
+                        onPress={addToWatchlistACB}
                     >
-                        <Text style={styles.subHeader}>+</Text>
+                        <Text style={styles.subHeader}> + </Text>
                     </Pressable>
                 </View>
-                <Text style={styles.whiteText}>{props.movie?.release_date ? props.movie.release_date.substring(0, 4) : ""}</Text>
+                <Text style={styles.grayText}>{movie.release_date ? movie.release_date.substring(0, 4) : ""}</Text>
             </View>
 
             <View style={styles.container}>
                 <Text style={styles.whiteText}>Rating: </Text>
-                <Text style={styles.whiteText}>⭐  {props.movie?.vote_average
+                <Text style={styles.whiteText}>⭐  {movie.vote_average
                     ? Math.round(props.movie.vote_average * 10) / 10
                     : "?"} / 10</Text>
             </View>
 
             <View style={styles.container}>
                 <Text style={styles.subHeader}>Description</Text>
-                <Text style={styles.whiteText}>{props.movie.overview}</Text>
+                <Text style={styles.grayText}>{movie.overview}</Text>
             </View>
 
             <View style={styles.container}>
                 <Text style={styles.subHeader}>Cast {/* TODO: make a list */}</Text>
-                <Text style={styles.whiteText}>list of actors...</Text>
+                <Text style={styles.grayText}>list of actors...</Text>
             </View>
 
             <View style={styles.container}>
                 <Text style={styles.whiteText}>Available on: {/* TODO: make a list */}</Text>
-                <Text style={styles.whiteText}>list of streaming platforms...</Text>
+                <Text style={styles.grayText}>list of streaming platforms...</Text>
             </View>
 
         </ScrollView>
@@ -73,7 +73,8 @@ export function DetailsView(props) {
   const styles = StyleSheet.create({
     base: {
         flex: 1,
-        backgroundColor: "#807e80", // grey from prototype
+        backgroundColor: "#111",
+        // backgroundColor: "#807e80", // grey from prototype
         // padding: 16, // spacing
     },
     container: {
@@ -94,14 +95,18 @@ export function DetailsView(props) {
     image: {
         width: "100%",
         aspectRatio: 3,
-        borderRadius: 8,
-        margin: 8,
+        // borderRadius: 8,
+        margin: 0,
     },
     whiteText: {
         color: "white",
     },
+    grayText: {
+        color: "#bbb",
+    },
     button: {
-        backgroundColor: "#cccccc",
+        backgroundColor: "#222",
+        // backgroundColor: "#cccccc",
         borderRadius: 8,
         margin: 0,
         padding: 8,
