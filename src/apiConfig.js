@@ -127,10 +127,48 @@ function getAllGenreNames() {
     .catch(err => console.error("Error fetching similar movies:", err));
 }
 
+function getCast(movieId) {
+  const url = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY}`
+
+  return fetch(url, {
+    method: 'GET',
+    headers: {
+      'accept': 'application/json',
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmNzZlNDQ2ZTY1ZDBiZWNkMzczNTU0NTlhZDhjNmEzNCIsIm5iZiI6MTc0MzUzNTQ4OC43MDQsInN1YiI6IjY3ZWMzZDgwYzU0NDIzM2Q4ZjJmYzkxNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.QMHJoTif9UlffXNdBfofjOb5aDI9wVj6qNGcP-saIhA'
+    }
+  })
+    .then(gotResponseACB)
+    .then(resultsACB)
+    .then(credits => {
+      if (!credits || !Array.isArray(credits.cast)) return [];
+      return credits.cast.map(actor => actor.name).join(", ");
+    })
+    .catch(err => console.error("Error fetching cast list:", err));
+}
+
+function getStreamingPlatforms(movieId) {
+  const url = `https://api.themoviedb.org/3/movie/${movieId}/watch/providers?api_key=${API_KEY}`;
+
+  return fetch(url, {
+    method: 'GET',
+    headers: {
+      'accept': 'application/json',
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmNzZlNDQ2ZTY1ZDBiZWNkMzczNTU0NTlhZDhjNmEzNCIsIm5iZiI6MTc0MzUzNTQ4OC43MDQsInN1YiI6IjY3ZWMzZDgwYzU0NDIzM2Q4ZjJmYzkxNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.QMHJoTif9UlffXNdBfofjOb5aDI9wVj6qNGcP-saIhA'
+    }
+  })
+  .then(gotResponseACB)
+  .then(resultsACB)
+  .then(data => {
+    const providers = data.results?.SE?.flatrate || [];
+    return providers.map(p => p.provider_name); // returns list of platform names
+  })
+  .catch(err => console.error("Error fetching similar movies:", err));
+}
+
 globalThis.searchMovies = searchMovies;
 globalThis.getMovieDetails = getMovieDetails;
 
-export { searchMovies, getMovieDetails, getTopRatedMovies, getSimilarMovies, getAllGenreNames };
+export { searchMovies, getMovieDetails, getTopRatedMovies, getSimilarMovies, getAllGenreNames, getCast, getStreamingPlatforms };
 
 
 // https://developer.themoviedb.org/reference/movie-details

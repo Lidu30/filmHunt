@@ -1,4 +1,4 @@
-import { getAllGenreNames } from './apiConfig'
+import { getAllGenreNames, getCast, getStreamingPlatforms } from './apiConfig'
 
 const model = {
 // user info for authentication
@@ -12,13 +12,19 @@ const model = {
   rating: [],
   currentMovie: null,
   currentMovieGenres: [],
+  currentMovieCast: [],
+  currentMoviePlatforms: [],
+  currentMoviePromiseState: {},
   ready: false,
   genres: [],
  
-  setCurrentMovie(movie) {
+  async setCurrentMovie(movie) {
     this.currentMovie = movie;
     this.currentMovieGenres = this.getGenreNames(movie.genre_ids)
-    console.log(this.currentMovie);
+    this.currentMovieCast = await getCast(movie.id)
+    this.currentMoviePlatforms = await getStreamingPlatforms(movie.id)
+    // console.log("LOOK AT THIS:", this.currentMoviePlatforms)
+    // console.log(this.currentMovie);
   },
 
 
@@ -94,6 +100,17 @@ const model = {
       .filter(Boolean) // remove undefined values
       .map((genre) => genre.name);
   },
+
+  /*
+  currentMovieEffect() {
+    if (!this.currentMovie) {
+      this.currentMoviePromiseState = { promise: null, data: null, error: null }
+      return;
+    }
+    const moviePromise = getAdditionalMovieDetails(this.currentMovie)
+    resolvePromise(moviePromise, this.currentMoviePromiseState)
+  },
+  */
 };
 
 export { model };

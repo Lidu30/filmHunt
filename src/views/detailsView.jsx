@@ -15,7 +15,9 @@ export function DetailsView(props) {
 
     function addToWatchlistACB() {
         // TODO
-        console.log()
+        console.log('WOOOO Current Movie:', movie);
+        console.log('Is in Watchlist:', props.inWatchList);
+        props.addingToWatchList()
     }
 
     function posterPathACB() {
@@ -38,7 +40,7 @@ export function DetailsView(props) {
                         disabled={props.isDishInMenu}
                         onPress={addToWatchlistACB}
                     >
-                        <Text style={styles.subHeader}> + </Text>
+                        <Text style={styles.buttonText}>{props.inWatchList ? "In Watchlist" : " + " }</Text>
                     </Pressable>
                 </View>
                 <Text style={styles.grayText}>{movie.release_date ? movie.release_date.substring(0, 4) : ""}</Text>
@@ -57,13 +59,13 @@ export function DetailsView(props) {
             </View>
 
             <View style={styles.container}>
-                <Text style={styles.subHeader}>Cast {/* TODO: make a list */}</Text>
-                <Text style={styles.grayText}>list of actors...</Text>
+                <Text style={styles.subHeader}>Cast</Text>
+                <Text style={styles.grayText}>{props.movieCast}</Text>
             </View>
 
             <View style={styles.container}>
-                <Text style={styles.whiteText}>Available on: {/* TODO: make a list */}</Text>
-                <Text style={styles.grayText}>list of streaming platforms...</Text>
+                <Text style={styles.whiteText}>Available on:</Text>
+                <Text style={styles.grayText}>{props.streamingPlatforms}</Text>
             </View>
 
         </ScrollView>
@@ -91,6 +93,11 @@ export function DetailsView(props) {
         fontSize: 20,
         fontWeight: "bold",
         color: "white",
+    },
+    buttonText: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "#bbb",
     },
     image: {
         width: "100%",
