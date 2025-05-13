@@ -1,7 +1,7 @@
 import { observable, configure, reaction } from "mobx";
 import { connectToPersistence } from "./firestoreModel"
 import { model } from "./model.js"
-import { searchMovies } from './apiConfig'
+import { searchMovies, loadAllGenres } from './apiConfig'
 
 configure({ enforceActions: "never" });
 // TODO, add a proper model object:
@@ -10,6 +10,9 @@ reactiveModel.user = null; //?
 
 // TODO side effects, connect to persistence etc
 global.myModel = reactiveModel; // make application state available in Console
+
+// Load genre names at startup
+reactiveModel.loadAllGenres();
 
 function setDummyMovie(results) {
     const firstMovie = results[0]; // grab the first result

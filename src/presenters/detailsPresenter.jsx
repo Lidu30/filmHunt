@@ -1,8 +1,11 @@
 import { observer } from "mobx-react-lite";
 import { DetailsView } from "../views/detailsView";
 import { SuspenseView } from "../views/suspenseView";
+import { reactiveModel } from "../bootstrapping";
 
 export const Details = observer(function Details(props) {
+
+    console.log("props:", props)
 
     const currentMovie = props.model.currentMovie
 

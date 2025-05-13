@@ -1,12 +1,12 @@
 import {
+    Image,
     Linking,
     Pressable,
     ScrollView,
     StyleSheet,
     Text,
     View,
-  } from "react-native"
-import { Image } from "expo-image"
+} from "react-native"
 import { router } from "expo-router"
 // import { getCardStyle } from "../utilities"
 import { reactiveModel } from "../bootstrapping";
@@ -14,22 +14,24 @@ import { reactiveModel } from "../bootstrapping";
 export function DetailsView(props) {
 
     function posterPathACB() {
-        return "https://image.tmdb.org/t/p/w500" + props.movie.poster_path;
+        console.log("current movie:", props.movie)
+        return "https://image.tmdb.org/t/p/w500" + props.movie.backdrop_path;
     }
 
-    <Image 
-                source={posterPathACB} style={styles.image} />
+    //<Image 
+                //source={posterPathACB} style={styles.image} />
+
+    // <Text style={styles.whiteText}>{console.log(props)}</Text>
 
     return (
         <ScrollView style={styles.base}>
-            <Text style={styles.whiteText}>{console.log(props)}</Text>
             
             <Image source={{ uri: posterPathACB() }} style={styles.image} />
 
             <View style={styles.container}>
-                <Text style={styles.whiteText}>Comedy | Thriller | Drama</Text>
+                <Text style={styles.whiteText}>{/*Comedy | Thriller | Drama*/} {props.movie.genre_names}</Text>
                 <View style={styles.rowBetween}>
-                    <Text style={styles.header}>{props.movie.title}</Text>
+                    <Text style={styles.header}>{props.movie.original_title}</Text>
                     <Pressable 
                         style={true /* TODO */ ? styles.button : styles.button}
                         role="button"
@@ -39,17 +41,19 @@ export function DetailsView(props) {
                         <Text style={styles.subHeader}>+</Text>
                     </Pressable>
                 </View>
-                <Text style={styles.whiteText}>20XX</Text>
+                <Text style={styles.whiteText}>{props.movie?.release_date ? props.movie.release_date.substring(0, 4) : ""}</Text>
             </View>
 
             <View style={styles.container}>
                 <Text style={styles.whiteText}>Rating: </Text>
-                <Text style={styles.whiteText}>4.5 ⭐</Text>
+                <Text style={styles.whiteText}>⭐  {props.movie?.vote_average
+                    ? Math.round(props.movie.vote_average * 10) / 10
+                    : "?"} / 10</Text>
             </View>
 
             <View style={styles.container}>
                 <Text style={styles.subHeader}>Description</Text>
-                <Text style={styles.whiteText}>movie description blablabla...</Text>
+                <Text style={styles.whiteText}>{props.movie.overview}</Text>
             </View>
 
             <View style={styles.container}>

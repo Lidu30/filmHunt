@@ -43,7 +43,12 @@ export const Homepage = observer(function Homepage(props) {
 
   function addToWatchlist(movie){
     reactiveModel.addToWatchlist(movie);
-    console.log("addding to watchlist:", [...reactiveModel.watchlist]);
+    console.log("adding to watchlist:", [...reactiveModel.watchlist]);
+  }
+
+  function handleMovieSelect(movie){
+    reactiveModel.setCurrentMovie(movie)
+    console.log("set current movie to", movie.original_title)
   }
 
   useEffect(() => {
@@ -56,5 +61,6 @@ export const Homepage = observer(function Homepage(props) {
     searchMovies={searchMovies} // doesnt work
     addToWatchlist={addToWatchlist}
     fetchMoreMovies={fetchMoreMovies}
+    onMovieSelect={handleMovieSelect}
   />;
 });

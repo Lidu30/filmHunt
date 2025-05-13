@@ -1,3 +1,5 @@
+import { getAllGenreNames } from './apiConfig'
+
 const model = {
 // user info for authentication
   userDetails: {
@@ -10,10 +12,11 @@ const model = {
   rating: [],
   currentMovie: null,
   ready: false,
+  genres: [],
  
   setCurrentMovie(movie) {
     this.currentMovie = movie;
-    console.log(this);
+    console.log(this.currentMovie);
   },
 
 
@@ -70,7 +73,25 @@ const model = {
 
   watchlistHas(movieId){
     return this.watchlist.some((movie) => movie.id === movieId);
-  }
+  },
+
+  async loadAllGenres() {
+    try {
+      const response = await getAllGenreNames();
+      this.genres = response.genres || [];
+    } catch (err) {
+      console.error("Failed to load genres:", err);
+    }
+  },
+
+  getGenreNames(ids = []) {
+    if (!Array.isArray(ids)) return [];
+  
+    return ids
+      .map((id) => this.genres.find((genre) => genre.id === id))
+      .filter(Boolean) // remove undefined values
+      .map((genre) => genre.name);
+  },
 };
 
 export { model };

@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 {
     "expo": {
       "name": "filmHunt",
@@ -34,3 +35,10 @@
     }
   }
   
+=======
+{
+  "android": {
+    "package": "com.anonymous.amahelhnassersreenijavengalavt25project"
+  }
+}
+>>>>>>> Stashed changes

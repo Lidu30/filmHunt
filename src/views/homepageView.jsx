@@ -34,7 +34,8 @@ export const HomepageView = observer(({
   fetchMoreMovies, 
   addToWatchlist,
   currentPage = 1,
-  totalPages = 1 
+  totalPages = 1,
+  onMovieSelect
 }) => {
   const [isLoadingSearch, setIsLoadingSearch] = useState(false);
   const [watchlist, setWatchlist] = useState([]);
@@ -47,9 +48,10 @@ export const HomepageView = observer(({
 
   function goToDetails(movie) {
     console.log("Navigating to movie details:", movie);
+    onMovieSelect(movie)
+    
     router.push("./details");
-    /* getMovieDetails(movie); */
-    currentMovie= movie;
+    /* getMovieDetails(movie); */    
   }
 
   const handleSearchChange = (text) => {
@@ -217,9 +219,9 @@ export const HomepageView = observer(({
                 movie={movie}
                 onAddToWatchlist={handleAddToWatchlist}
                 isInWatchlist={isInWatchlist}
-                onPress={() => {
-                  goToDetails(movie.original_title);
-                  console.log("reached",movie);
+                onPress={ /*goToDetails*/ () => {
+                  goToDetails(movie);
+                  console.log("reached", movie);
                 }}
               />
             );

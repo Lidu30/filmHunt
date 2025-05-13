@@ -94,7 +94,7 @@ function getTopRatedMovies() {
   })
     .then(gotResponseACB)
     .then(resultsACB)
-    .catch(err => console.error("Error fetching top rated movies:", err));
+    .catch(err => console.error("Error fetching all genres:", err));
 }
 
 function getSimilarMovies(movieId) {
@@ -112,12 +112,25 @@ function getSimilarMovies(movieId) {
     .catch(err => console.error("Error fetching similar movies:", err));
 }
 
+function getAllGenreNames() {
+  const url = `https://api.themoviedb.org/3/genre/movie/list?language=en&${API_KEY}`;
 
+  return fetch(url, {
+    method: 'GET',
+    headers: {
+      'accept': 'application/json',
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmNzZlNDQ2ZTY1ZDBiZWNkMzczNTU0NTlhZDhjNmEzNCIsIm5iZiI6MTc0MzUzNTQ4OC43MDQsInN1YiI6IjY3ZWMzZDgwYzU0NDIzM2Q4ZjJmYzkxNyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.QMHJoTif9UlffXNdBfofjOb5aDI9wVj6qNGcP-saIhA'
+    }
+  })
+    .then(gotResponseACB)
+    .then(resultsACB)
+    .catch(err => console.error("Error fetching similar movies:", err));
+}
 
 globalThis.searchMovies = searchMovies;
 globalThis.getMovieDetails = getMovieDetails;
 
-export { searchMovies, getMovieDetails, getTopRatedMovies, getSimilarMovies };
+export { searchMovies, getMovieDetails, getTopRatedMovies, getSimilarMovies, getAllGenreNames };
 
 
 // https://developer.themoviedb.org/reference/movie-details
