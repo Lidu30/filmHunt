@@ -133,7 +133,7 @@ export const HomepageView = observer(({
   };
 
   const handleAddToWatchlist = (movie) => {
-    if (!watchlist.some((m) => m.id === movie.id)) {
+    if (!reactiveModel.watchlist.some((m) => m.id === movie.id)) {
       setWatchlist((prev) => [...prev, movie]);
         addToWatchlist(movie);
     } else {
@@ -212,7 +212,7 @@ export const HomepageView = observer(({
         <View style={styles.movieGrid}>
           {moviesToDisplay && moviesToDisplay.map((movie) => {
             if (!movie) return null;
-            const isInWatchlist = watchlist.some((m) => m.id === movie.id);
+            const isInWatchlist = reactiveModel.watchlist.some((m) => m.id === movie.id);
             return (
               <SwipeableMovieCard
                 key={movie.id}
