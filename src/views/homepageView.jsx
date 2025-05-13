@@ -135,12 +135,12 @@ export const HomepageView = observer(({
       setWatchlist((prev) => [...prev, movie]);
         addToWatchlist(movie);
     } else {
-        console.log(`${movie.title} is already in your watchlist.`);
-        Alert.alert(
-        "Already in Watchlist",
-        `"${movie.title}" is already in your watchlist.`,
-        [{ text: "OK" }],
-        { cancelable: true }
+      console.log(`${movie.title} is already in your watchlist.`);
+      Alert.alert(
+      "Already in Watchlist",
+      `"${movie.title}" is already in your watchlist.`,
+      [{ text: "OK" }],
+      { cancelable: true }
     );
     }
     
