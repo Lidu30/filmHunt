@@ -11,59 +11,73 @@ import {
   
   export function WatchListView(props) {
     function renderWatchListItem(element) {
-      const movie = element.item;
-      if (!movie) return null;
+  const movie = element.item;
+  if (!movie) return null;
 
-      const posterUrl = movie.poster_path 
-        ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
-        : "https://via.placeholder.com/200x300?text=No+Poster";
+  const posterUrl = movie.poster_path 
+    ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
+    : "https://via.placeholder.com/200x300?text=No+Poster";
 
-      function previewMovieACB() {
-        if (props.movieChosen) {
-          props.movieChosen(movie);
-          router.push("/(tabs)/details");
-        }
-      }
+  // Get release year if available
+  const releaseYear = movie.release_date 
+    ? movie.release_date.substring(0, 4) 
+    : "N/A";
 
-      function deleteMovieACB() {
-        if (props.onDeleteMovie) {
-          props.onDeleteMovie(movie.id);
-        }
-      }
-
-      return (
-        <Pressable
-          role="button"
-          style={styles.movieContainer}
-          onPress={previewMovieACB}
-        >
-          <View style={styles.row}>
-            <View style={styles.imageContainer}>
-              <Image style={styles.image} source={{ uri: posterUrl }} />
-            </View>
-            
-            <View style={styles.contentContainer}>
-              <Text style={styles.movieName} numberOfLines={2}>
-                {movie.title}
-              </Text>
-              <View style={styles.infoContainer}>
-                <Text style={styles.whereToWatch}>
-                  {movie.whereToWatch}
-                </Text>
-                {movie.rating && (
-                  <View style={styles.ratingContainer}>
-                    <Text style={styles.ratingText}>{movie.rating} ★</Text>
-                  </View>
-                )}
-              </View>
-            </View>
-            <TouchableOpacity style={styles.deleteButton} onPress={deleteMovieACB}>
-              <Text style={styles.deleteButtonText}>×</Text>
-            </TouchableOpacity>
-          </View>
-        </Pressable>
-      );
+  function previewMovieACB() {
+    if (props.movieChosen) {
+      props.movieChosen(movie);
+      router.push("/(tabs)/details");
     }
+  }
+
+  function deleteMovieACB() {
+    if (props.onDeleteMovie) {
+      props.onDeleteMovie(movie.id);
+    }
+  }
+
+  return (
+    <Pressable
+      role="button"
+      style={styles.movieContainer}
+      onPress={previewMovieACB}
+    >
+      <View style={styles.row}>
+        <View style={styles.imageContainer}>
+          <Image style={styles.image} source={{ uri: posterUrl }} />
+        </View>
+        
+        <View style={styles.contentContainer}>
+          <Text style={styles.movieName} numberOfLines={2}>
+            {movie.title}
+          </Text>
+          <View style={styles.detailsRow}>
+            <Text style={styles.sub}>
+              {releaseYear}
+            </Text>
+            <View style={styles.ratingContainer}>
+              <Text style={styles.ratingText}>
+                ⭐{" "}
+                {movie.vote_average
+                  ? Math.round(movie.vote_average * 10) / 10
+                  : "?"}
+              </Text>
+            </View>
+          </View>
+          <Text numberOfLines={3} style={styles.overview}>
+            {movie.overview || "No overview available."}
+          </Text>
+          <TouchableOpacity 
+            style={styles.deleteButton}
+            onPress={deleteMovieACB}
+          >
+            <Text style={styles.deleteButtonText}>Remove</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Pressable>
+  );
+}
 
     if (props.watchList.length === 0) {
       return (
@@ -83,7 +97,7 @@ import {
       return (
         <View style={styles.container}>
           <Text style={styles.watchlistHeader}>Your Watchlist</Text>
-          {renderWatchListItem({ item: watchList[0] })}
+          {renderWatchListItem({ item: props.watchList[0] })}
         </View>
       );
     }
@@ -109,18 +123,18 @@ import {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#f8f8f8",
+      backgroundColor: "#121212",
     },
     watchlistHeader: {
       fontSize: 22,
       fontWeight: "bold",
-      color: "#333",
+      color: "#fff",
       marginVertical: 16,
       marginHorizontal: 16,
     },
     emptyContainer: {
       flex: 1,
-      backgroundColor: "#f8f8f8",
+      backgroundColor: "#121212",
       justifyContent: "center", 
       alignItems: "center",
       padding: 20
@@ -128,12 +142,12 @@ import {
     emptyTitle: {
       fontSize: 22,
       fontWeight: "bold",
-      color: "#333",
+      color: "#fff",
       marginBottom: 12,
     },
     emptyText: {
       fontSize: 16,
-      color: "#666",
+      color: "#aaa", //Light gray
       textAlign: "center",
       lineHeight: 24,
       marginBottom: 24
@@ -154,15 +168,17 @@ import {
       padding: 10,
     },
     movieContainer: {
-      backgroundColor: "white",
-      borderRadius: 8,
+      backgroundColor: "#222",
+      borderRadius: 12,
       marginHorizontal: 10,
       marginBottom: 12,
+      borderWidth: 1,
+      borderColor: "#333",
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 2,
+      shadowOpacity: 0.3,
+      shadowRadius: 5,
+      elevation: 5,
       overflow: "hidden",
     },
     row: {
@@ -189,7 +205,7 @@ import {
     movieName: {
       fontSize: 16,
       fontWeight: "600",
-      color: "#111",
+      color: "#fff",
       marginBottom: 8,
     },
     infoContainer: {
@@ -197,7 +213,7 @@ import {
     },
     whereToWatch: {
       fontSize: 14,
-      color: "#555",
+      color: "#bbb", //dark gray
       marginBottom: 8,
     },
     ratingContainer: {
@@ -210,18 +226,45 @@ import {
       fontWeight: "bold",
     },
     deleteButton: {
-      width: 28,
-      height: 28,
-      borderRadius: 14,
-      backgroundColor: "#f5f5f5",
-      justifyContent: "center",
-      alignItems: "center",
-      marginLeft: 8,
+      backgroundColor: "#fff",
+      paddingVertical: 6,
+      paddingHorizontal: 80,
+      borderRadius: 4,
+      marginTop: 16
     },
     deleteButtonText: {
-      fontSize: 20,
-      color: "#ff4d4f",
+      fontSize: 15,
+      color: "#ff0000",
       fontWeight: "bold",
       marginTop: -2,
-    }
+      
+    },
+    detailsRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 8,
+    },
+    sub: {
+      color: "#bbb",
+      fontSize: 14,
+    },
+    overview: {
+      marginTop: 5,
+      color: "#aaa",
+      fontSize: 14,
+      lineHeight: 20,
+    },
+    ratingContainer: {
+      backgroundColor: "rgba(255, 193, 7, 0.2)",
+      paddingVertical: 3,
+      paddingHorizontal: 8,
+      borderRadius: 6,
+    },
+    ratingText: {
+      color: "#FFC107",
+      fontSize: 14,
+      fontWeight: "bold",
+    },
+
   });  

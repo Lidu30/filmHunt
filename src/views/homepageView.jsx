@@ -2,6 +2,7 @@ import { observer } from "mobx-react-lite";
 import React, { useState, useEffect } from "react";
 import {
   ActivityIndicator,
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -134,8 +135,15 @@ export const HomepageView = observer(({
       setWatchlist((prev) => [...prev, movie]);
         addToWatchlist(movie);
     } else {
-      console.log(`${movie.title} is already in your watchlist.`);
+        console.log(`${movie.title} is already in your watchlist.`);
+        Alert.alert(
+        "Already in Watchlist",
+        `"${movie.title}" is already in your watchlist.`,
+        [{ text: "OK" }],
+        { cancelable: true }
+    );
     }
+    
   };
 
   const moviesToDisplay = isSearching ? searchResults : moviesarray;
