@@ -2,15 +2,15 @@
 export const API_KEY = "3d2a031b4cmsh5cd4e7b939ada54p19f679jsn9a775627d767";
 
 function resultsACB(data) {
-  console.log(data);
+  //console.log(data);
   return data;
 }
 
 function gotResponseACB(response) {
   if (response.status !== 200) {
-    throw new Error("Error");
+    throw new Error("Error " + response.status);
   }
-  console.log(response);
+  //console.log(response);
   return response.json();
 }
 
@@ -54,7 +54,7 @@ function searchMovies(searchParams) {
 
 function getMovieDetails(searchParams) {
   const queryString = new URLSearchParams(searchParams).toString();
-  const searchUrl = `https://api.themoviedb.org/3/search/movie?${queryString}`;
+  const searchUrl = `https://api.themoviedb.org/3/movie/${queryString}`;
 
   return fetch(searchUrl, {
     method: 'GET',
@@ -64,7 +64,7 @@ function getMovieDetails(searchParams) {
     }
   })
     .then(gotResponseACB)
-    .then(data => {
+    /*.then(data => {
       const movieId = data.results[0]?.id;
       if (!movieId) throw new Error("No movie found");
 
@@ -77,7 +77,7 @@ function getMovieDetails(searchParams) {
         }
       });
     })
-    .then(gotResponseACB)
+    .then(gotResponseACB)*/
     .catch(err => console.error("Error fetching movie details:", err));
   
 }

@@ -1,5 +1,14 @@
 # vt25-Project - FilmHunt
 
+### BUGS
+- ~~currentMovie not being added correctly to watchlist from detailsView~~
+- logout button
+- scrolling on homepage
+- dark background for user pages
+- subheader for first movies displayed on homepage?
+- navigation bar should be the same everywhere
+- document for user reviews
+
 ### Project description
 FilmHunt is an app where users can search for movie suggestions personalized to their interests. Each user has a watchlist, where they can add movies they want to watch, as well as a watched list so they can keep track of the movies they’ve already seen. To add a film to their watchlist, the user can either search for a specific film directly or browse through a database of movies with ratings, genre, as well as information about the cast and what streaming platforms the film is available on. A synopsis of each movie will also be included. 
 

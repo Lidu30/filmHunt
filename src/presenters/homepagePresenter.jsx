@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { HomepageView } from "../views/homepageView";
-import { getTopRatedMovies } from "../apiConfig";
+import { getTopRatedMovies, getMovieDetails } from "../apiConfig";
 import model from "../model";
 import { reactiveModel } from "../bootstrapping";
 
@@ -15,7 +15,7 @@ export const Homepage = observer(function Homepage(props) {
     setIsLoading(true);
     try {
       const movieData = await getTopRatedMovies(page);
-      console.log(movieData);
+      //console.log(movieData);
       
       if (movieData && movieData.results) {
         if (page === 1) {
@@ -43,11 +43,12 @@ export const Homepage = observer(function Homepage(props) {
 
   function addToWatchlist(movie){
     reactiveModel.addToWatchlist(movie);
-    console.log("adding to watchlist:", [...reactiveModel.watchlist]);
+    // console.log("adding to watchlist:", [...reactiveModel.watchlist]);
   }
 
-  function handleMovieSelect(movie){
-    reactiveModel.setCurrentMovie(movie)
+  async function handleMovieSelect(movie){
+    console.log("movie recieved:", movie)
+    reactiveModel.setCurrentMovie(await getMovieDetails(movie.id))
     console.log("set current movie to", movie.original_title)
   }
 

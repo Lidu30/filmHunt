@@ -20,7 +20,8 @@ const model = {
  
   async setCurrentMovie(movie) {
     this.currentMovie = movie;
-    this.currentMovieGenres = this.getGenreNames(movie.genre_ids)
+    console.log("set current movie to", movie)
+    this.currentMovieGenres = this.getGenreNames(movie.genres)
     this.currentMovieCast = await getCast(movie.id)
     this.currentMoviePlatforms = await getStreamingPlatforms(movie.id)
     // console.log("LOOK AT THIS:", this.currentMoviePlatforms)
@@ -96,8 +97,8 @@ const model = {
     if (!Array.isArray(ids)) return [];
   
     return ids
-      .map((id) => this.genres.find((genre) => genre.id === id))
-      .filter(Boolean) // remove undefined values
+      //.map((id) => this.genres.find((genre) => genre.id === id))
+      //.filter(Boolean) // remove undefined values
       .map((genre) => genre.name);
   },
 
