@@ -25,11 +25,11 @@ export const Details = observer(function Details(props) {
         */
     }
 
-    const inwatchlist = !!props.model.watchlist.find(movie)
+    const inwatchlist = !!props.model.watchlist.find(currentMovie)
 
-    function addToWatchListACB(movie){
+    function addToWatchListACB(){
         console.log('Adding movie to watchlist:', props.model.currentMovie);
-        props.model.addToWatchlist(props.model.movie)
+        props.model.addToWatchlist(props.model.currentMovie);
         console.log('Watchlist:', props.model.watchlist);
     }
 

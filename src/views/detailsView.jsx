@@ -15,9 +15,9 @@ export function DetailsView(props) {
 
     function addToWatchlistACB() {
         // TODO
-        console.log('WOOOO Current Movie:', movie);
-        console.log('Is in Watchlist:', props.inWatchList);
-        props.addingToWatchList(movie);
+        // console.log('WOOOO Current Movie:', movie);
+        // console.log('Is in Watchlist:', props.inWatchList);
+        props.addingToWatchList();
     }
 
     function posterPathACB() {
