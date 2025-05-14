@@ -18,8 +18,11 @@ export const WatchList = observer(function WatchList(props) {
       
       try {
         // Get the most recently added movie from watchlist (we can probably come up with a better idea)
-        const sourceMovie = props.model.watchlist[props.model.watchlist.length - 1];
-        
+        // const sourceMovie = props.model.watchlist[props.model.watchlist.length - 1];
+        const sortedByRating = [...props.model.watchlist].sort((a, b) => 
+          (b.vote_average) - (a.vote_average)
+        );
+        const sourceMovie = sortedByRating[0];
         // Fetch similar movies
         const similarMovies = await getSimilarMovies(sourceMovie.id);
         
@@ -27,7 +30,7 @@ export const WatchList = observer(function WatchList(props) {
         const watchlistIds = props.model.watchlist.map(m => m.id);
         const filteredRecommendations = similarMovies.results.filter(
           movie => !watchlistIds.includes(movie.id)
-        ).slice(0, 8); // Limit to 8 recommendations
+        ).slice(0, 30); // Limit to 8 recommendations
         
         setRecommendations(filteredRecommendations);
       } catch (error) {

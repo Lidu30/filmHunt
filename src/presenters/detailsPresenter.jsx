@@ -12,6 +12,7 @@ import {
 
 export const Details = observer(function Details(props) {
     const movieId = props.model.currentMovie?.id; 
+    const currentMovie = props.model.currentMovie;
     //console.log("movieID: " + movieId)
     // console.log("movie:", props.model.currentMovie)
 
@@ -24,9 +25,11 @@ export const Details = observer(function Details(props) {
         */
     }
 
-    function addToWatchListACB(){
+    const inwatchlist = !!props.model.watchlist.find(movie)
+
+    function addToWatchListACB(movie){
         console.log('Adding movie to watchlist:', props.model.currentMovie);
-        props.model.addToWatchlist(props.model.currentMovie)
+        props.model.addToWatchlist(props.model.movie)
         console.log('Watchlist:', props.model.watchlist);
     }
 
@@ -36,10 +39,10 @@ export const Details = observer(function Details(props) {
                 movieCast={props.model.currentMovieCast}
                 streamingPlatforms={props.model.currentMoviePlatforms.join("\n")}
                 addingToWatchList={addToWatchListACB}
-                inWatchList={props.model.watchlistHas(movieId)}
+                inWatchList={inwatchlist}
             />;
 
-    const currentMovie = props.model.currentMovie
+    
 
     const currentDishPromiseState = props.model.currentDishPromiseState;
     // const isDishInMenu = !!props.model.dishes.find(checkDishInMenu)
