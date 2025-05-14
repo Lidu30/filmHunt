@@ -12,7 +12,9 @@ import {
 
 export const Details = observer(function Details(props) {
     const movieId = props.model.currentMovie?.id; 
-    //console.log("movieID: " + movieId)
+
+    //const movie = await getMovieDetails(movieId)
+    // console.log("movieID:", movieId)
     // console.log("movie:", props.model.currentMovie)
 
     if (!movieId) {
@@ -41,7 +43,7 @@ export const Details = observer(function Details(props) {
 
     const currentMovie = props.model.currentMovie
 
-    const currentDishPromiseState = props.model.currentDishPromiseState;
+    const currentMoviePromiseState = props.model.currentMoviePromiseState;
     // const isDishInMenu = !!props.model.dishes.find(checkDishInMenu)
     // if (currentDishPromiseState.data) {
         return <DetailsView

@@ -46,12 +46,14 @@ export const HomepageView = observer(({
   const [searchTotalPages, setSearchTotalPages] = useState(1);
   const [searchLoadingMore, setSearchLoadingMore] = useState(false);
 
-  function goToDetails(movie) {
+  async function goToDetails(movie) {
+    const movieDetails = await getMovieDetails(movie.id);    
+    console.log("movieDetails:", movieDetails)
     console.log("Navigating to movie details:", movie);
     onMovieSelect(movie)
     
     router.push("./details");
-    /* getMovieDetails(movie); */    
+    // console.log(movie)
   }
 
   const handleSearchChange = (text) => {
@@ -75,7 +77,7 @@ export const HomepageView = observer(({
     }
 
     try {
-      console.log("searching movies for:", searchQuery, "page:", page);
+      //console.log("searching movies for:", searchQuery, "page:", page);
       const response = await searchMovies({
         query: searchQuery,
         include_adult: false,
@@ -269,7 +271,7 @@ const SwipeableMovieCard = ({ movie, onAddToWatchlist, isInWatchlist, onPress })
     .onEnd(() => {
       if (translateX.value > swipeThreshold) {
         runOnJS(onAddToWatchlist)(movie);
-        console.log("added to watchlist", [...model.watchlist]);
+        //console.log("added to watchlist", [...model.watchlist]);
       }
       translateX.value = withTiming(0);
     });

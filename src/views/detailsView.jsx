@@ -18,10 +18,11 @@ export function DetailsView(props) {
         console.log('WOOOO Current Movie:', movie);
         console.log('Is in Watchlist:', props.inWatchList);
         props.addingToWatchList()
+        console.log('Is in Watchlist:', props.inWatchList);
     }
 
     function posterPathACB() {
-        console.log("current movie:", movie)
+        // console.log("current movie:", movie)
         return "https://image.tmdb.org/t/p/w500" + movie.backdrop_path;
     }
 
