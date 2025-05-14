@@ -12,7 +12,6 @@ import {
 
 export const Details = observer(function Details(props) {
     const movieId = props.model.currentMovie?.id; 
-    const currentMovie = props.model.currentMovie;
     //console.log("movieID: " + movieId)
     // console.log("movie:", props.model.currentMovie)
 
@@ -25,11 +24,9 @@ export const Details = observer(function Details(props) {
         */
     }
 
-    const inwatchlist = !!props.model.watchlist.find(currentMovie)
-
     function addToWatchListACB(){
         console.log('Adding movie to watchlist:', props.model.currentMovie);
-        props.model.addToWatchlist(props.model.currentMovie);
+        props.model.addToWatchlist(props.model.currentMovie)
         console.log('Watchlist:', props.model.watchlist);
     }
 
@@ -39,27 +36,27 @@ export const Details = observer(function Details(props) {
                 movieCast={props.model.currentMovieCast}
                 streamingPlatforms={props.model.currentMoviePlatforms.join("\n")}
                 addingToWatchList={addToWatchListACB}
-                inWatchList={inwatchlist}
+                inWatchList={props.model.watchlistHas(movieId)}
             />;
 
-    
+    // const currentMovie = props.model.currentMovie
 
-    const currentDishPromiseState = props.model.currentDishPromiseState;
+    //const currentDishPromiseState = props.model.currentDishPromiseState;
     // const isDishInMenu = !!props.model.dishes.find(checkDishInMenu)
     // if (currentDishPromiseState.data) {
-        return <DetailsView
-            movie = {currentMovie}
+        // return <DetailsView
+            // movie = {currentMovie}
             /*
             dishData = {currentDishPromiseState.data}
             guests = {props.model.numberOfGuests}
             isDishInMenu = {isDishInMenu} 
             userWantsToAddDish = {addDishACB}
             */
-        />;
+        // />;
     // }
     
-    return <SuspenseView
-        promise ={currentDishPromiseState.promise}
-        error = {currentDishPromiseState.error} 
-    />;
+    // return <SuspenseView
+        // promise ={currentDishPromiseState.promise}
+        // error = {currentDishPromiseState.error} 
+    // />;
 })

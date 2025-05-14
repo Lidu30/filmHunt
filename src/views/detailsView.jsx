@@ -15,9 +15,9 @@ export function DetailsView(props) {
 
     function addToWatchlistACB() {
         // TODO
-        // console.log('WOOOO Current Movie:', movie);
-        // console.log('Is in Watchlist:', props.inWatchList);
-        props.addingToWatchList();
+        console.log('WOOOO Current Movie:', movie);
+        console.log('Is in Watchlist:', props.inWatchList);
+        props.addingToWatchList()
     }
 
     function posterPathACB() {
@@ -37,7 +37,7 @@ export function DetailsView(props) {
                     <Pressable 
                         style={true /* TODO */ ? styles.button : styles.button}
                         role="button"
-                        // disabled={props.isDishInMenu}
+                        disabled={props.isDishInMenu}
                         onPress={addToWatchlistACB}
                     >
                         <Text style={styles.buttonText}>{props.inWatchList ? "In Watchlist" : " + " }</Text>
