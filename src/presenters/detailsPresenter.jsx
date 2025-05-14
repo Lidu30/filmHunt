@@ -39,24 +39,24 @@ export const Details = observer(function Details(props) {
                 inWatchList={props.model.watchlistHas(movieId)}
             />;
 
-    // const currentMovie = props.model.currentMovie
+    const currentMovie = props.model.currentMovie
 
-    //const currentDishPromiseState = props.model.currentDishPromiseState;
+    const currentDishPromiseState = props.model.currentDishPromiseState;
     // const isDishInMenu = !!props.model.dishes.find(checkDishInMenu)
     // if (currentDishPromiseState.data) {
-        // return <DetailsView
-            // movie = {currentMovie}
+        return <DetailsView
+            movie = {currentMovie}
             /*
             dishData = {currentDishPromiseState.data}
             guests = {props.model.numberOfGuests}
             isDishInMenu = {isDishInMenu} 
             userWantsToAddDish = {addDishACB}
             */
-        // />;
+        />;
     // }
     
-    // return <SuspenseView
-        // promise ={currentDishPromiseState.promise}
-        // error = {currentDishPromiseState.error} 
-    // />;
+    return <SuspenseView
+        promise ={currentDishPromiseState.promise}
+        error = {currentDishPromiseState.error} 
+    />;
 })
