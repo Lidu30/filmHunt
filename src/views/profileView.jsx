@@ -46,6 +46,10 @@ export function ProfileView({
         </View>
       </View>
 
+      <View><Pressable onPress={logout} style={styles.logoutButton}>
+          <MaterialIcons name="logout" size={28} color="#4B2E2A" />
+        </Pressable></View>
+
       <View style={styles.field}>
         <Text style={styles.label}>Phone</Text>
         <View style={styles.row}>
@@ -77,9 +81,7 @@ export function ProfileView({
           onChangeText={setEmail}
         />
       </View>
-      <View><Pressable onPress={logout} style={styles.logoutButton}>
-          <MaterialIcons name="logout" size={28} color="#4B2E2A" />
-        </Pressable></View>
+      
 
       {edit && (
         <TouchableOpacity style={styles.saveButton} onPress={save}>
