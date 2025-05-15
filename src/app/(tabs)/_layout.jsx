@@ -10,13 +10,11 @@ import { MaterialIcons } from '@expo/vector-icons'
 
 
 export default observer(function RootLayout() {
-  return reactiveModel.ready ? (
+  return (
     <SafeAreaProvider>
       <View style={styles.container}>
         <Tabs
-          screenOptions={{
-            headerShown: false,
-          }}
+          screenOptions={{ headerShown: false }}
           tabBar={props => <CustomTabBar {...props} />}
         >
           <Tabs.Screen
@@ -54,16 +52,27 @@ export default observer(function RootLayout() {
             }}
           />
         </Tabs>
+        {
+          !reactiveModel.ready && (
+            <View style={styles.overlay}>
+              <ActivityIndicator size="large" color="#fff" />
+            </View>
+          )
+        }
       </View>
     </SafeAreaProvider>
-  ) : (
-    <ActivityIndicator size="large" style={{ flex: 1, justifyContent: 'center' }} />
-  );
+  )
 });
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000000',
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

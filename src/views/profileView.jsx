@@ -86,7 +86,6 @@ export function ProfileView({
         </LinearGradient>
       )}
 
-      {/* only show nav buttons when not editing */}
       {!edit && (
         <View style={styles.navContainer}>
           <LinearGradient
