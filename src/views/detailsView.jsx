@@ -1,6 +1,5 @@
 import {
     Image,
-    Linking,
     Pressable,
     ScrollView,
     StyleSheet,
@@ -14,15 +13,13 @@ export function DetailsView(props) {
     const movie = props.movie
 
     function addToWatchlistACB() {
-        // TODO
-        console.log('WOOOO Current Movie:', movie);
-        console.log('Is in Watchlist:', props.inWatchList);
+        // console.log('Current Movie:', movie);
+        // console.log('Is in Watchlist:', props.inWatchList);
         props.addingToWatchList()
-        console.log('Is in Watchlist:', props.inWatchList);
+        // console.log('Is in Watchlist:', props.inWatchList);
     }
 
     function posterPathACB() {
-        // console.log("current movie:", movie)
         return "https://image.tmdb.org/t/p/w500" + movie.backdrop_path;
     }
 
@@ -36,9 +33,9 @@ export function DetailsView(props) {
                 <View style={styles.rowBetween}>
                     <Text style={styles.header}>{movie.title}</Text>
                     <Pressable 
-                        style={true /* TODO */ ? styles.button : styles.button}
+                        style={styles.button}
                         role="button"
-                        disabled={props.isDishInMenu}
+                        disabled={props.inWatchList}
                         onPress={addToWatchlistACB}
                     >
                         <Text style={styles.buttonText}>{props.inWatchList ? "In Watchlist" : " + " }</Text>
@@ -66,7 +63,11 @@ export function DetailsView(props) {
 
             <View style={styles.container}>
                 <Text style={styles.whiteText}>Available on:</Text>
-                <Text style={styles.grayText}>{props.streamingPlatforms}</Text>
+                <Text style={styles.grayText}>{props.streamingPlatforms.length > 0
+                    ? props.streamingPlatforms
+                    : "Not available in your country" 
+                    /* The country is preset to Sweden, see apiConfig.js */}
+                </Text>
             </View>
 
         </ScrollView>
@@ -77,13 +78,9 @@ export function DetailsView(props) {
     base: {
         flex: 1,
         backgroundColor: "#111",
-        // backgroundColor: "#807e80", // grey from prototype
-        // padding: 16, // spacing
     },
     container: {
-        // flex: 1,
-        // backgroundColor: "#807e80", // grey from prototype
-        padding: 16, // spacing
+        padding: 16,
     },
     header: {
         fontSize: 30,
@@ -103,7 +100,6 @@ export function DetailsView(props) {
     image: {
         width: "100%",
         aspectRatio: 3,
-        // borderRadius: 8,
         margin: 0,
     },
     whiteText: {
@@ -114,17 +110,14 @@ export function DetailsView(props) {
     },
     button: {
         backgroundColor: "#222",
-        // backgroundColor: "#cccccc",
         borderRadius: 8,
         margin: 0,
         padding: 8,
-        // flex: 1,
-        // alignItems: "center",
     },
     rowBetween: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-      },
+    },
   })
   
