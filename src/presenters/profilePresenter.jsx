@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { router, useNavigation } from "expo-router"
+import { router } from "expo-router"
 import { reactiveModel } from "../bootstrapping"
 import { logOut, connectToPersistence } from "../firestoreModel"
 import { ProfileView } from "../views/profileView"
 
 
 export const Profile = observer(() => {
-  const navigation = useNavigation()
   const [edit, setEdit] = useState(false)
   const [name, setName] = useState(reactiveModel.userDetails.name)
   const [email, setEmail] = useState(reactiveModel.userDetails.email)
@@ -23,31 +22,6 @@ useEffect(() => {
     reactiveModel.userDetails.email,
     reactiveModel.userDetails.phone,
   ]);
-
-  // hiding the tab bar while editing
-  useEffect(() => {
-    navigation.setOptions({
-      tabBarStyle: {
-        display: edit ? "none" : "flex",
-        position: "absolute",
-        left: 0,
-        right: 0,
-        bottom: 25,
-        marginHorizontal: "10%",
-        borderRadius: 15,
-        width: "80%",
-        alignSelf: "center",
-        borderTopWidth: 0,
-        shadowOpacity: 0.5,
-        height: 60,
-        paddingTop: 5,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "rgba(255, 255, 255, 1)",
-        elevation: 2,
-      },
-    })
-  }, [edit])
 
   const handleLogout = async () => {
     await logOut()
