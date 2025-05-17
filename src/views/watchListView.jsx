@@ -338,7 +338,7 @@ import {
     },
     recommendationsContainer: {
         marginTop: 20,
-        paddingBottom: 30,
+        paddingBottom: 80,
     },
     recommendationsHeader: {
         fontSize: 22,

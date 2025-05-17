@@ -31,7 +31,9 @@ export function DetailsView(props) {
             <View style={styles.container}>
                 <Text style={styles.grayText}>{props.movieGenres}</Text>
                 <View style={styles.rowBetween}>
-                    <Text style={styles.header}>{movie.title}</Text>
+                    <View style={{ flex: 1, paddingRight: 8 }}>
+                        <Text style={[styles.header, { flexShrink: 1 }]}>{movie.title}</Text>
+                    </View> 
                     <Pressable 
                         style={styles.button}
                         role="button"
@@ -61,7 +63,7 @@ export function DetailsView(props) {
                 <Text style={styles.grayText}>{props.movieCast}</Text>
             </View>
 
-            <View style={styles.container}>
+            <View style={styles.detailscontainer} >
                 <Text style={styles.whiteText}>Available on:</Text>
                 <Text style={styles.grayText}>{props.streamingPlatforms.length > 0
                     ? props.streamingPlatforms
@@ -81,6 +83,7 @@ export function DetailsView(props) {
     },
     container: {
         padding: 16,
+
     },
     header: {
         fontSize: 30,
@@ -118,6 +121,12 @@ export function DetailsView(props) {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
+        flexWrap: "nowrap"
     },
+
+    detailscontainer: {
+        padding: 16,
+        marginBottom: 100 
+    }
   })
   
