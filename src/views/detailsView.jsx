@@ -7,7 +7,8 @@ import {
     View,
   } from "react-native"
 import { router } from "expo-router"
-  
+import { LinearGradient } from 'expo-linear-gradient';
+
 export function DetailsView(props) {
 
     const movie = props.movie
@@ -34,14 +35,22 @@ export function DetailsView(props) {
                     <View style={{ flex: 1, paddingRight: 8 }}>
                         <Text style={[styles.header, { flexShrink: 1 }]}>{movie.title}</Text>
                     </View> 
-                    <Pressable 
-                        style={styles.button}
-                        role="button"
-                        disabled={props.inWatchList}
-                        onPress={addToWatchlistACB}
-                    >
-                        <Text style={styles.buttonText}>{props.inWatchList ? "In Watchlist" : " + " }</Text>
-                    </Pressable>
+                    <LinearGradient
+                        colors={['#4c669f','#3b5998','#192f6a']}
+                        start={{ x: 0, y: 1 }}
+                        end={{ x: 0, y: 0 }}
+                        style={styles.gradientButton}
+                        >
+                        <Pressable
+                            onPress={addToWatchlistACB}
+                            disabled={props.inWatchList}
+                            style={styles.gradientInner}
+                        >
+                            <Text style={styles.gradientText}>
+                            {props.inWatchList ? 'In Watchlist' : '+'}
+                            </Text>
+                        </Pressable>
+                        </LinearGradient>
                 </View>
                 <Text style={styles.grayText}>{movie.release_date ? movie.release_date.substring(0, 4) : ""}</Text>
             </View>
@@ -95,11 +104,6 @@ export function DetailsView(props) {
         fontWeight: "bold",
         color: "white",
     },
-    buttonText: {
-        fontSize: 20,
-        fontWeight: "bold",
-        color: "#bbb",
-    },
     image: {
         width: "100%",
         aspectRatio: 3,
@@ -111,22 +115,29 @@ export function DetailsView(props) {
     grayText: {
         color: "#bbb",
     },
-    button: {
-        backgroundColor: "#222",
-        borderRadius: 8,
-        margin: 0,
-        padding: 8,
-    },
     rowBetween: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
         flexWrap: "nowrap"
     },
-
     detailscontainer: {
         padding: 16,
         marginBottom: 100 
-    }
+    },
+    gradientButton: {
+        borderRadius: 8,
+        overflow: 'hidden',
+      },
+      gradientInner: {
+        paddingVertical: 6,
+        paddingHorizontal: 16,
+        alignItems: 'center',
+      },
+      gradientText: {
+        color: '#fff',
+        fontSize: 20,
+        fontWeight: 'bold',
+      },
   })
   

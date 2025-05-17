@@ -7,11 +7,12 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     ScrollView 
+}from "react-native";
 
-  } from "react-native";
   import { Image } from "expo-image";
   import { router } from "expo-router";
   import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+  import { LinearGradient } from "expo-linear-gradient";
   
   export function WatchListView(props) {
     function renderWatchListItem(element) {
@@ -59,24 +60,33 @@ import {
                 <Text style={styles.sub}>
                   {releaseYear}
                 </Text>
-                <View style={styles.ratingContainer}>
-                  <Text style={styles.ratingText}>
-                    ⭐{" "}
-                    {movie.vote_average
-                      ? Math.round(movie.vote_average * 10) / 10
-                      : "?"}
+                <LinearGradient
+                  colors={['#4c669f','#3b5998','#192f6a']}
+                  start={{ x: 0, y: 1 }}
+                  end={{ x: 0, y: 0 }}
+                  style={styles.ratingGradient}
+                >
+                  <Text style={styles.ratingTextGradient}>
+                    ⭐ {movie.vote_average ? Math.round(movie.vote_average*10)/10 : "?"}
                   </Text>
-                </View>
+                </LinearGradient>
               </View>
               <Text numberOfLines={3} style={styles.overview}>
                 {movie.overview || "No overview available."}
               </Text>
-              <TouchableOpacity 
-                style={styles.deleteButton}
-                onPress={deleteMovieACB}
+              <LinearGradient
+                colors={["#4c669f", "#3b5998", "#192f6a"]}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 0, y: 0 }}
+                style={styles.gradientButton}
               >
-                <Text style={styles.deleteButtonText}>Remove</Text>
-              </TouchableOpacity>
+                <TouchableOpacity 
+                  style={styles.gradientInner}
+                  onPress={deleteMovieACB}
+                >
+                  <Text style={styles.gradientText}>Remove</Text>
+                </TouchableOpacity>
+              </LinearGradient>
             </View>
           </View>
         </Pressable>
@@ -106,14 +116,20 @@ import {
                   {item.vote_average ? (Math.round(item.vote_average * 10) / 10) : "?"}
                 </Text>
             </View>   
-
-             <TouchableOpacity 
-                style={styles.addToWatchlistButton}
-                onPress={() => props.onAddToWatchlist(item)}
+            <LinearGradient
+                colors={["#4c669f", "#3b5998", "#192f6a"]}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 0, y: 0 }}
+                style={styles.gradientButtonSmall}
               >
-                <MaterialIcons name="add" size={14} color="white" />
-                <Text style={styles.addToWatchlistText}>Add</Text>
-              </TouchableOpacity>   
+                <TouchableOpacity
+                  style={styles.gradientInnerSmall}
+                  onPress={() => props.onAddToWatchlist(item)}
+                >
+                  <MaterialIcons name="add" size={14} color="#fff" />
+                  <Text style={styles.gradientTextSmall}>Add</Text>
+                </TouchableOpacity>
+              </LinearGradient>
           </View>
         </TouchableOpacity>       
       );
@@ -199,7 +215,8 @@ import {
       fontSize: 22,
       fontWeight: "bold",
       color: "#fff",
-      marginVertical: 16,
+      marginTop: 40,
+      marginBottom: 16,
       marginHorizontal: 16,
     },
     emptyContainer: {
@@ -283,31 +300,8 @@ import {
     },
     whereToWatch: {
       fontSize: 14,
-      color: "#bbb", //dark gray
+      color: "#bbb",
       marginBottom: 8,
-    },
-    ratingContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
-    ratingText: {
-      fontSize: 14,
-      color: "#f5a623",
-      fontWeight: "bold",
-    },
-    deleteButton: {
-      backgroundColor: "#fff",
-      paddingVertical: 6,
-      paddingHorizontal: 80,
-      borderRadius: 4,
-      marginTop: 16
-    },
-    deleteButtonText: {
-      fontSize: 15,
-      color: "#ff0000",
-      fontWeight: "bold",
-      marginTop: -2,
-      
     },
     detailsRow: {
       flexDirection: "row",
@@ -324,17 +318,6 @@ import {
       color: "#aaa",
       fontSize: 14,
       lineHeight: 20,
-    },
-    ratingContainer: {
-      backgroundColor: "rgba(255, 193, 7, 0.2)",
-      paddingVertical: 3,
-      paddingHorizontal: 8,
-      borderRadius: 6,
-    },
-    ratingText: {
-      color: "#FFC107",
-      fontSize: 14,
-      fontWeight: "bold",
     },
     recommendationsContainer: {
         marginTop: 20,
@@ -392,17 +375,50 @@ import {
         fontSize: 12,
         marginLeft: 4,
     },
-    addToWatchlistButton: {
-        backgroundColor: '#0055AA',
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        borderRadius: 4,
-        alignItems: 'center',
+    gradientButton: {
+      borderRadius: 6,
+      overflow: 'hidden',
+      alignSelf: 'flex-start',
+      marginTop: 12,
     },
-    addToWatchlistText: {
-        color: 'white',
-        fontSize: 12,
-        fontWeight: 'bold',
+    gradientInner: {
+      paddingVertical: 8,
+      paddingHorizontal: 20,
+      alignItems: 'center',
     },
-
+    gradientText: {
+      color: '#fff',
+      fontWeight: '600',
+    },
+  
+    gradientButtonSmall: {
+      borderRadius: 6,
+      overflow: 'hidden',
+      alignSelf: 'flex-start',
+      marginTop: 8,
+    },
+    gradientInnerSmall: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 4,
+      paddingHorizontal: 10,
+    },
+    gradientTextSmall: {
+      color: '#fff',
+      fontSize: 12,
+      marginLeft: 4,
+    },  
+    ratingGradient: {
+      alignSelf: 'flex-start',
+      borderRadius: 6,
+      overflow: 'hidden',
+      paddingVertical: 4,
+      paddingHorizontal: 8,
+      marginLeft: 6,
+    },
+    ratingTextGradient: {
+      color: '#fff',
+      fontSize: 14,
+      fontWeight: '600',
+    },
   });  

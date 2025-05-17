@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import React, { useState, useEffect } from "react";
+import { LinearGradient } from 'expo-linear-gradient';
 import {
   ActivityIndicator,
   Alert,
@@ -181,12 +182,19 @@ export const HomepageView = observer(({
               <Text style={styles.clearButtonText}>✕</Text>
             </TouchableOpacity>
           )}
-          <TouchableOpacity
-            onPress={() => handleSearch(1)}
-            style={styles.searchButton}
+          <LinearGradient
+            colors={['#4c669f', '#3b5998', '#192f6a']}
+            start={{ x: 0, y: 1 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.searchButtonGradient}
           >
-            <Text style={styles.searchButtonText}>🔍</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => handleSearch(1)}
+              style={styles.searchButtonInner}
+            >
+              <Text style={styles.searchButtonText}>🔍</Text>
+            </TouchableOpacity>
+          </LinearGradient>
         </View>
 
         {isCurrentlyLoading && !isCurrentlyLoadingMore && (
@@ -304,22 +312,29 @@ const SwipeableMovieCard = ({ movie, onAddToWatchlist, isInWatchlist, onPress })
               <Text style={styles.sub}>
                 {movie?.release_date ? movie.release_date.substring(0, 4) : "N/A"}
               </Text>
-              <View style={styles.ratingContainer}>
-                <Text style={styles.ratingText}>
-                  ⭐{" "}
-                  {movie?.vote_average
-                    ? Math.round(movie.vote_average * 10) / 10
-                    : "?"}
+              <LinearGradient
+                colors={['#4c669f','#3b5998','#192f6a']}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 0, y: 0 }}
+                style={styles.ratingGradient}
+              >
+                <Text style={styles.ratingTextGradient}>
+                  ⭐ {movie?.vote_average ? (Math.round(movie.vote_average * 10) / 10) : "?"}
                 </Text>
-              </View>
+              </LinearGradient>
             </View>
-            <Text numberOfLines={3} style={styles.overview}>
+            <Text numberOfLines={2} style={styles.overview}>
               {movie?.overview || "No overview available."}
             </Text>
             {isInWatchlist && (
-              <View style={styles.watchlistBadge}>
-                <Text style={styles.watchlistText}>In Watchlist</Text>
-              </View>
+              <LinearGradient
+                colors={['#4c669f','#3b5998','#192f6a']}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 0, y: 0 }}
+                style={styles.watchlistGradient}
+              >
+                <Text style={styles.watchlistTextGradient}>In Watchlist</Text>
+              </LinearGradient>
             )}
           </View>
         </TouchableOpacity>
@@ -333,6 +348,7 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: "#121212",
     flex: 1,
+    paddingTop: 40,   
   },
   header: {
     fontSize: 28,
@@ -363,14 +379,6 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     padding: 8,
-  },
-  searchButton: {
-    marginLeft: 5,
-    backgroundColor: "#3498db",
-    borderRadius: 8,
-    padding: 8,
-    justifyContent: "center",
-    alignItems: "center",
   },
   searchButtonText: {
     color: "#fff",
@@ -431,6 +439,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 6,
+    marginTop: 8,
   },
   detailsRow: {
     flexDirection: "row",
@@ -442,31 +451,11 @@ const styles = StyleSheet.create({
     color: "#bbb",
     fontSize: 14,
   },
-  ratingContainer: {
-    backgroundColor: "rgba(255, 193, 7, 0.2)",
-    paddingVertical: 3,
-    paddingHorizontal: 8,
-    borderRadius: 6,
-  },
-  ratingText: {
-    color: "#FFC107",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
   overview: {
     marginTop: 5,
     color: "#aaa",
     fontSize: 14,
     lineHeight: 20,
-  },
-  watchlistBadge: {
-    position: "absolute",
-    top: 10,
-    right: 10,
-    backgroundColor: "rgba(46, 204, 113, 0.2)",
-    paddingVertical: 3,
-    paddingHorizontal: 8,
-    borderRadius: 6,
   },
   watchlistText: {
     color: "#2ecc71",
@@ -494,5 +483,48 @@ const styles = StyleSheet.create({
   },
   bottomPadding: {
     height: 40,
+  },
+  searchButtonGradient: {
+    borderRadius: 8,
+    overflow: 'hidden',
+    marginLeft: 5,          // keep your spacing
+  },
+  searchButtonInner: {
+    padding: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent', // no solid fill
+  },
+  searchButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  watchlistGradient: {
+    position: 'absolute',
+    top: 2.5,
+    right: 6,
+    borderRadius: 6,
+    overflow: 'hidden',
+    paddingVertical: 1,
+    paddingHorizontal: 6,
+  },
+  watchlistTextGradient: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  ratingGradient: {
+    borderRadius: 6,
+    overflow: 'hidden',
+    alignSelf: 'flex-start',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginLeft: 6,
+    backgroundColor: 'transparent',
+  },
+  ratingTextGradient: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
