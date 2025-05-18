@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { LinearGradient } from 'expo-linear-gradient';
 import {
   ActivityIndicator,
@@ -25,7 +25,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { searchMovies } from "../apiConfig"; 
 import { router } from "expo-router";
-import model from "../model";
 import { reactiveModel } from "../bootstrapping";
 
 export const HomepageView = observer(({ 
@@ -39,7 +38,6 @@ export const HomepageView = observer(({
   onMovieSelect
 }) => {
   const [isLoadingSearch, setIsLoadingSearch] = useState(false);
-  const [watchlist, setWatchlist] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -48,13 +46,8 @@ export const HomepageView = observer(({
   const [searchLoadingMore, setSearchLoadingMore] = useState(false);
 
   async function goToDetails(movie) {
-    const movieDetails = await getMovieDetails(movie.id);    
-    console.log("movieDetails:", movieDetails)
-    console.log("Navigating to movie details:", movie);
-    onMovieSelect(movie)
-    
+    onMovieSelect(movie);
     router.push("./details");
-    // console.log(movie)
   }
 
   const handleSearchChange = (text) => {
@@ -78,7 +71,6 @@ export const HomepageView = observer(({
     }
 
     try {
-      //console.log("searching movies for:", searchQuery, "page:", page);
       const response = await searchMovies({
         query: searchQuery,
         include_adult: false,
@@ -104,9 +96,7 @@ export const HomepageView = observer(({
       setSearchCurrentPage(page);
     } catch (error) {
       console.error("Search error:", error);
-      if (page === 1) {
-        setSearchResults([]);
-      }
+      if (page === 1) setSearchResults([]);
     } finally {
       setIsLoadingSearch(false);
       setSearchLoadingMore(false);
@@ -114,15 +104,12 @@ export const HomepageView = observer(({
   };
 
   const loadMoreResults = async () => {
-    console.log("Load more clicked");
     if (isSearching) {
       if (searchCurrentPage < searchTotalPages && !searchLoadingMore && !isLoadingSearch) {
-        console.log("Loading more search results, page:", searchCurrentPage + 1);
         await handleSearch(searchCurrentPage + 1);
       }
     } else {
       if (!loadingMore && typeof fetchMoreMovies === 'function') {
-        console.log("Loading more movies from main list");
         await fetchMoreMovies();
       }
     }
@@ -137,18 +124,15 @@ export const HomepageView = observer(({
 
   const handleAddToWatchlist = (movie) => {
     if (!reactiveModel.watchlist.some((m) => m.id === movie.id)) {
-      setWatchlist((prev) => [...prev, movie]);
         addToWatchlist(movie);
     } else {
-      console.log(`${movie.title} is already in your watchlist.`);
       Alert.alert(
-      "Already in Watchlist",
-      `"${movie.title}" is already in your watchlist.`,
-      [{ text: "OK" }],
-      { cancelable: true }
-    );
+        "Already in Watchlist",
+        `"${movie.title}" is already in your watchlist.`,
+        [{ text: "OK" }],
+        { cancelable: true }
+      );
     }
-    
   };
 
   const moviesToDisplay = isSearching ? searchResults : moviesarray;
@@ -160,11 +144,12 @@ export const HomepageView = observer(({
     ? searchCurrentPage < searchTotalPages 
     : currentPage < totalPages;
 
-  console.log("Current page:", displayCurrentPage, "Total pages:", displayTotalPages);
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ScrollView style={styles.container}>
+      <ScrollView 
+        style={styles.container}
+        showsVerticalScrollIndicator={false}
+      >
         <Text style={styles.header}>Find Movie</Text>
 
         <View style={styles.searchBarContainer}>
@@ -198,11 +183,7 @@ export const HomepageView = observer(({
         </View>
 
         {isCurrentlyLoading && !isCurrentlyLoadingMore && (
-          <ActivityIndicator
-            size="large"
-            color="#3498db"
-            style={styles.loader}
-          />
+          <ActivityIndicator size="large" color="#3498db" style={styles.loader} />
         )}
 
         {isSearching && !isLoadingSearch && (
@@ -229,10 +210,7 @@ export const HomepageView = observer(({
                 movie={movie}
                 onAddToWatchlist={handleAddToWatchlist}
                 isInWatchlist={isInWatchlist}
-                onPress={ /*goToDetails*/ () => {
-                  goToDetails(movie);
-                  console.log("reached", movie);
-                }}
+                onPress={() => goToDetails(movie)}
               />
             );
           })}
@@ -271,6 +249,8 @@ const SwipeableMovieCard = ({ movie, onAddToWatchlist, isInWatchlist, onPress })
   const swipeThreshold = 100;
 
   const panGesture = Gesture.Pan()
+    .activeOffsetX(15) 
+    .failOffsetY([-15, 15]) 
     .onUpdate((e) => {
       if (e.translationX > 0) {
         translateX.value = e.translationX;
@@ -279,7 +259,6 @@ const SwipeableMovieCard = ({ movie, onAddToWatchlist, isInWatchlist, onPress })
     .onEnd(() => {
       if (translateX.value > swipeThreshold) {
         runOnJS(onAddToWatchlist)(movie);
-        //console.log("added to watchlist", [...model.watchlist]);
       }
       translateX.value = withTiming(0);
     });
@@ -457,11 +436,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
   },
-  watchlistText: {
-    color: "#2ecc71",
-    fontSize: 12,
-    fontWeight: "bold",
-  },
   paginationButton: {
     backgroundColor: "#3498db",
     padding: 14,
@@ -480,6 +454,7 @@ const styles = StyleSheet.create({
     color: "#999",
     marginTop: 12,
     fontSize: 14,
+    marginBottom: 85,
   },
   bottomPadding: {
     height: 40,
@@ -487,13 +462,13 @@ const styles = StyleSheet.create({
   searchButtonGradient: {
     borderRadius: 8,
     overflow: 'hidden',
-    marginLeft: 5,          // keep your spacing
+    marginLeft: 5,
   },
   searchButtonInner: {
     padding: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'transparent', // no solid fill
+    backgroundColor: 'transparent',
   },
   searchButtonText: {
     color: '#fff',

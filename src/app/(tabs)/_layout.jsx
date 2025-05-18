@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { ActivityIndicator, View, StyleSheet, Text } from 'react-native';
 import { Tabs } from 'expo-router';
 import { observer } from 'mobx-react-lite';
@@ -49,6 +49,13 @@ export default observer(function RootLayout() {
                   color={'#fff'}
                 />
               ),
+            }}
+          />
+          <Tabs.Screen
+            name="toplist"  
+            options={{
+              title: 'toplist',
+              tabBarIcon: () => <Text>?</Text>,
             }}
           />
         </Tabs>

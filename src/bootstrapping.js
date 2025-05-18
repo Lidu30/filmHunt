@@ -1,5 +1,5 @@
 import { observable, configure, reaction } from "mobx";
-import { connectToPersistence } from "./firestoreModel"
+import { connectToPersistence, fetchFullNamesArray } from "./firestoreModel"
 import { model } from "./model.js"
 import { searchMovies, loadAllGenres } from './apiConfig'
 
@@ -26,3 +26,4 @@ searchMovies({ query: "greatest showman" })
     .then(console.log)
 
 connectToPersistence(reactiveModel, reaction); 
+/* fetchFullNamesArray(); */
