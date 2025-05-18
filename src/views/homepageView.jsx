@@ -335,6 +335,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 16,
     textAlign: "center",
+    marginTop: -25,
   },
   searchBarContainer: {
     flexDirection: "row",
