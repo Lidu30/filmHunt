@@ -23,13 +23,29 @@ import { reaction, runInAction } from "mobx";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { firebaseConfig } from "./firebaseConfig.js";
-import { reactiveModel } from "./bootstrapping";
+import { reactiveModel } from "./reactiveModel.js";
+import { Platform } from "react-native";
+import {
+  getAuth,
+  setPersistence,
+  browserLocalPersistence,
+} from "firebase/auth";
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-export const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage),
-});
+
+let auth;
+
+if (Platform.OS === "web") {
+  auth = getAuth(app);
+  setPersistence(auth, browserLocalPersistence); // optional, but common
+} else {
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage),
+  });
+}
+
+export { auth };
 
 // make doc and setDoc available at the Console for testing
 global.doc = doc;
@@ -124,7 +140,13 @@ onAuthStateChanged(auth, (user) => {
       reactiveModel.ready = false;
     });
     connectToPersistence();
-    router.replace("/(tabs)/home");
+    if (Platform.OS === "web") {
+      setTimeout(() => {
+        router.replace("/(tabs)/home");
+      }, 0);
+    } else {
+      router.replace("/(tabs)/home");
+    }
   } else {
     runInAction(() => {
       reactiveModel.userDetails = { id: null, name: "", email: "", phone: "" };
@@ -264,7 +286,11 @@ export async function getWatchlistById(documentId) {
   }
 }
 
-export async function submitWatchlistFeedback(targetUserId, commenterId, feedback) {
+export async function submitWatchlistFeedback(
+  targetUserId,
+  commenterId,
+  feedback
+) {
   if (!feedback.comment && feedback.rating == null) {
     throw new Error("Must provide either comment or rating.");
   }
