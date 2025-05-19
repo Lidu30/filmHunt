@@ -20,16 +20,12 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import { reaction, runInAction } from "mobx";
-import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { firebaseConfig } from "./firebaseConfig.js";
-import { reactiveModel } from "./reactiveModel.js";
+import { reactiveModel } from "./bootstrapping";
 import { Platform } from "react-native";
-import {
-  getAuth,
-  setPersistence,
-  browserLocalPersistence,
-} from "firebase/auth";
+import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
+import * as Routing from "expo-router";
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
@@ -38,7 +34,7 @@ let auth;
 
 if (Platform.OS === "web") {
   auth = getAuth(app);
-  setPersistence(auth, browserLocalPersistence); // optional, but common
+  setPersistence(auth, browserLocalPersistence); 
 } else {
   auth = initializeAuth(app, {
     persistence: getReactNativePersistence(AsyncStorage),
@@ -47,10 +43,27 @@ if (Platform.OS === "web") {
 
 export { auth };
 
-// make doc and setDoc available at the Console for testing
 global.doc = doc;
 global.setDoc = setDoc;
 global.db = db;
+
+
+const navigateTo = (path) => {
+  try {
+    const router = Routing.useRouter();
+    router.replace(path);
+  } catch (error) {
+    console.log("Router not ready, delaying navigation to:", path);
+    setTimeout(() => {
+      try {
+        const router = Routing.useRouter();
+        router.replace(path);
+      } catch (error) {
+        console.warn("Navigation failed after retry:", error);
+      }
+    }, 100);
+  }
+};
 
 const COLLECTION = "filmHunt";
 
@@ -126,6 +139,9 @@ export async function logOut() {
   console.log("Signed out");
 }
 
+
+let navigationAttempted = false;
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log("User is signed in:", user.uid);
@@ -140,12 +156,18 @@ onAuthStateChanged(auth, (user) => {
       reactiveModel.ready = false;
     });
     connectToPersistence();
-    if (Platform.OS === "web") {
-      setTimeout(() => {
-        router.replace("/(tabs)/home");
-      }, 0);
-    } else {
-      router.replace("/(tabs)/home");
+    
+
+    if (!navigationAttempted) {
+      navigationAttempted = true;
+            setTimeout(() => {
+        try {
+          const router = Routing.useRouter();
+          router.replace("/(tabs)/home");
+        } catch (error) {
+          console.log("Router not ready yet, will try during component rendering");
+        }
+      }, 500);
     }
   } else {
     runInAction(() => {
@@ -153,7 +175,18 @@ onAuthStateChanged(auth, (user) => {
       reactiveModel.watchlist = [];
       reactiveModel.ready = false;
     });
-    router.replace("/login");
+    
+    if (!navigationAttempted) {
+      navigationAttempted = true;
+      setTimeout(() => {
+        try {
+          const router = Routing.useRouter();
+          router.replace("/login");
+        } catch (error) {
+          console.log("Router not ready yet, will try during component rendering");
+        }
+      }, 500);
+    }
   }
 });
 
@@ -286,11 +319,7 @@ export async function getWatchlistById(documentId) {
   }
 }
 
-export async function submitWatchlistFeedback(
-  targetUserId,
-  commenterId,
-  feedback
-) {
+export async function submitWatchlistFeedback(targetUserId, commenterId, feedback) {
   if (!feedback.comment && feedback.rating == null) {
     throw new Error("Must provide either comment or rating.");
   }
@@ -327,4 +356,15 @@ export async function getAverageRatingForWatchlist(targetUserId) {
 
   const sum = feedback.reduce((acc, cur) => acc + cur.rating, 0);
   return sum / feedback.length;
+}
+
+// to make nav work
+export function useAuthNavigation() {
+  const router = Routing.useRouter();
+  
+  return {
+    navigateAfterAuth: (path) => {
+      router.replace(path);
+    }
+  };
 }

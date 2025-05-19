@@ -10,11 +10,13 @@ import {
 }from "react-native";
 
   import { Image } from "expo-image";
-  import { router } from "expo-router";
+  import { useRouter } from "expo-router";
   import MaterialIcons from "@expo/vector-icons/MaterialIcons";
   import { LinearGradient } from "expo-linear-gradient";
   
   export function WatchListView(props) {
+
+    const router = useRouter();
     function renderWatchListItem(element) {
       const movie = element.item;
       if (!movie) return null;

@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { router } from "expo-router"
+import { useRouter } from "expo-router"
 import { observer } from "mobx-react-lite"
 import { reactiveModel } from "../bootstrapping"
 import { signIn, connectToPersistence } from "../firestoreModel"
@@ -9,6 +9,8 @@ import { reaction } from "mobx"
 export const LoginPresenter = observer(() => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+
+  const router = useRouter();
 
   const handleLogin = async () => {
     if (!email || !password) {

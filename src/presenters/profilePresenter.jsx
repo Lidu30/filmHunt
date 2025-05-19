@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { router } from "expo-router"
+import { useRouter } from "expo-router"
 import { reactiveModel } from "../bootstrapping"
 import { logOut, connectToPersistence } from "../firestoreModel"
 import { ProfileView } from "../views/profileView"
@@ -11,6 +11,8 @@ export const Profile = observer(() => {
   const [name, setName] = useState(reactiveModel.userDetails.name)
   const [email, setEmail] = useState(reactiveModel.userDetails.email)
   const [phone, setPhone] = useState(reactiveModel.userDetails.phone)
+
+  const router = useRouter();
 
 useEffect(() => {
     setName(reactiveModel.userDetails.name || "");

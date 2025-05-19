@@ -1,36 +1,40 @@
 {
-    "expo": {
-      "name": "filmHunt",
-      "slug": "film-hunt",
-      "version": "1.0.0",
-      "orientation": "portrait",
-      "icon": "./assets/images/icon.png",
-      "scheme": "film-hunt",
-      "userInterfaceStyle": "light",
-      "splash": {
-        "image": "./assets/images/splash.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#ffffff"
-      },
-      "ios": {
-        "supportsTablet": true
-      },
-      "android": {
-        "adaptiveIcon": {
-          "foregroundImage": "./assets/images/adaptive-icon.png",
-          "backgroundColor": "#ffffff"
-        }
-      },
-      "web": {
-        "bundler": "metro",
-        "output": "static",
-        "favicon": "./assets/images/favicon.png"
-      },
-      "plugins": ["expo-router"],
-      "experiments": {
-        "typedRoutes": true
-      },
-      "newArchEnabled": true
+  "expo": {
+    "name": "filmHunt",
+    "slug": "film-hunt",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "film-hunt",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "filmhunt.iprog"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "newArchEnabled": true,
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b801a12b-c14b-47bd-afe4-0e038c4cff2c"
+      }
     }
   }
-  
+}

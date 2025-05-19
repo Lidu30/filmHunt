@@ -6,13 +6,14 @@ import {
     Text,
     View,
   } from "react-native"
-import { router } from "expo-router"
+import { useRouter } from "expo-router"
 import { LinearGradient } from 'expo-linear-gradient';
 
 export function DetailsView(props) {
 
     const movie = props.movie
 
+    const router = useRouter();
     function addToWatchlistACB() {
         // console.log('Current Movie:', movie);
         // console.log('Is in Watchlist:', props.inWatchList);

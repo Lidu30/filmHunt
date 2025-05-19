@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { router } from "expo-router"
+import { useRouter } from "expo-router"
 import { observer } from "mobx-react-lite"
 import { signUp } from "../firestoreModel"
 import { SignupView } from "../views/signupView"
@@ -10,6 +10,8 @@ export const SignupPresenter = observer(() => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [password2, setPassword2] = useState("")
+
+  const router = useRouter();
 
   return (
     <SignupView

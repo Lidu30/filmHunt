@@ -2,7 +2,7 @@ import { ActivityIndicator, View, StyleSheet, Text } from "react-native";
 import { Tabs } from "expo-router";
 import { observer } from "mobx-react-lite";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { reactiveModel } from "../../bootstrapping";
+import { reactiveModel } from "../../bootstrapping.js";
 import { CustomTabBar } from "../../components/CustomTabBar";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
