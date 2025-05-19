@@ -25,7 +25,8 @@ import { firebaseConfig } from "./firebaseConfig.js";
 import { reactiveModel } from "./bootstrapping";
 import { Platform } from "react-native";
 import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
-import * as Routing from "expo-router";
+// import * as Routing from "expo-router";
+import { router } from "expo-router";
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
@@ -34,7 +35,7 @@ let auth;
 
 if (Platform.OS === "web") {
   auth = getAuth(app);
-  setPersistence(auth, browserLocalPersistence); 
+  setPersistence(auth, browserLocalPersistence);
 } else {
   auth = initializeAuth(app, {
     persistence: getReactNativePersistence(AsyncStorage),
@@ -48,25 +49,24 @@ global.setDoc = setDoc;
 global.db = db;
 
 
-const navigateTo = (path) => {
-  try {
-    const router = Routing.useRouter();
-    router.replace(path);
-  } catch (error) {
-    console.log("Router not ready, delaying navigation to:", path);
-    setTimeout(() => {
-      try {
-        const router = Routing.useRouter();
-        router.replace(path);
-      } catch (error) {
-        console.warn("Navigation failed after retry:", error);
-      }
-    }, 100);
-  }
-};
+// const navigateTo = (path) => {
+//   try {
+//     const router = Routing.useRouter();
+//     router.replace(path);
+//   } catch (error) {
+//     console.log("Router not ready, delaying navigation to:", path);
+//     setTimeout(() => {
+//       try {
+//         const router = Routing.useRouter();
+//         router.replace(path);
+//       } catch (error) {
+//         console.warn("Navigation failed after retry:", error);
+//       }
+//     }, 100);
+//   }
+// };
 
 const COLLECTION = "filmHunt";
-
 function userDocRef(uid) {
   return doc(db, COLLECTION, uid);
 }
@@ -136,6 +136,7 @@ export async function logOut() {
     reactiveModel.watchlist = [];
     reactiveModel.ready = false;
   });
+  navigationAttempted = false
   console.log("Signed out");
 }
 
@@ -143,9 +144,9 @@ export async function logOut() {
 let navigationAttempted = false;
 
 onAuthStateChanged(auth, (user) => {
+  runInAction(() => {
   if (user) {
     console.log("User is signed in:", user.uid);
-    runInAction(() => {
       reactiveModel.userDetails = {
         id: user.uid,
         name: "",
@@ -154,41 +155,22 @@ onAuthStateChanged(auth, (user) => {
       };
       reactiveModel.watchlist = [];
       reactiveModel.ready = false;
-    });
-    connectToPersistence();
-    
-
-    if (!navigationAttempted) {
-      navigationAttempted = true;
-            setTimeout(() => {
-        try {
-          const router = Routing.useRouter();
-          router.replace("/(tabs)/home");
-        } catch (error) {
-          console.log("Router not ready yet, will try during component rendering");
-        }
-      }, 500);
-    }
-  } else {
-    runInAction(() => {
+      connectToPersistence();
+      if (!navigationAttempted) {
+        navigationAttempted = true;
+        setTimeout(() => router.replace("/(tabs)/home"), 500);
+      }
+    } else {
       reactiveModel.userDetails = { id: null, name: "", email: "", phone: "" };
       reactiveModel.watchlist = [];
       reactiveModel.ready = false;
-    });
-    
-    if (!navigationAttempted) {
-      navigationAttempted = true;
-      setTimeout(() => {
-        try {
-          const router = Routing.useRouter();
-          router.replace("/login");
-        } catch (error) {
-          console.log("Router not ready yet, will try during component rendering");
-        }
-      }, 500);
+      if (!navigationAttempted) {
+        navigationAttempted = true;
+        setTimeout(() => router.replace("/login"), 500);
+      }
     }
-  }
-});
+    });
+  });
 
 export function connectToPersistence() {
   const uid = reactiveModel.userDetails.id;
@@ -359,12 +341,15 @@ export async function getAverageRatingForWatchlist(targetUserId) {
 }
 
 // to make nav work
-export function useAuthNavigation() {
-  const router = Routing.useRouter();
+// export function useAuthNavigation() {
+//   const router = Routing.useRouter();
   
-  return {
-    navigateAfterAuth: (path) => {
-      router.replace(path);
-    }
-  };
+//   return {
+//     navigateAfterAuth: (path) => {
+//       router.replace(path);
+//     }
+//   };
+// }
+export function navigateAfterAuth(path) {
+  router.replace(path);
 }
