@@ -8,9 +8,11 @@ import {
     View,
     TouchableOpacity,
   } from "react-native"
-import { router } from "expo-router"
+import { useRouter } from "expo-router"
   
 export function EmptyDetailsView() {
+
+    const router = useRouter();
 
     return (
         <View style={styles.emptyContainer}>

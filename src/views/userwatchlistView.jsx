@@ -10,12 +10,14 @@ import {
   Alert,
 } from "react-native";
 import { Image } from "expo-image";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useState, useCallback, memo } from "react";
 import { reactiveModel } from "../bootstrapping";
 
 const WatchlistItem = memo(({ item, onMovieSelect }) => {
+
+    const router = useRouter();
   if (!item) return null;
 
   const posterUrl = item.poster_path

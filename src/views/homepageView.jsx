@@ -24,7 +24,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { searchMovies } from "../apiConfig"; 
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { reactiveModel } from "../bootstrapping";
 
 export const HomepageView = observer(({ 
@@ -44,6 +44,8 @@ export const HomepageView = observer(({
   const [searchCurrentPage, setSearchCurrentPage] = useState(1);
   const [searchTotalPages, setSearchTotalPages] = useState(1);
   const [searchLoadingMore, setSearchLoadingMore] = useState(false);
+
+  const router = useRouter();
 
   async function goToDetails(movie) {
     onMovieSelect(movie);
