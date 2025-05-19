@@ -59,9 +59,7 @@ export function CustomTabBar({ state, descriptors, navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    left: 20,
-    right: 20,
+    // position: 'absolute',
     height: 60,
     borderRadius: 30,
     flexDirection: 'row',
