@@ -112,6 +112,16 @@ const model = {
     resolvePromise(moviePromise, this.currentMoviePromiseState)
   },
   */
+ clearModel(){
+    this.userDetails = { id: null, name: "", email: "", phone: "" };
+    this.watchlist = [];
+    this.rating = [];
+    this.currentMovie = null;
+    this.currentMovieGenres = [];
+    this.currentMovieCast = [];
+    this.currentMoviePlatforms = [];
+    this.currentMoviePromiseState = {};
+ }
 };
 
 export { model };

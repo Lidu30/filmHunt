@@ -20,50 +20,21 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import { reaction, runInAction } from "mobx";
+import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { firebaseConfig } from "./firebaseConfig.js";
 import { reactiveModel } from "./bootstrapping";
-import { Platform } from "react-native";
-import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
-import * as Routing from "expo-router";
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+export const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
 
-let auth;
-
-if (Platform.OS === "web") {
-  auth = getAuth(app);
-  setPersistence(auth, browserLocalPersistence); 
-} else {
-  auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(AsyncStorage),
-  });
-}
-
-export { auth };
-
+// make doc and setDoc available at the Console for testing
 global.doc = doc;
 global.setDoc = setDoc;
 global.db = db;
-
-
-const navigateTo = (path) => {
-  try {
-    const router = Routing.useRouter();
-    router.replace(path);
-  } catch (error) {
-    console.log("Router not ready, delaying navigation to:", path);
-    setTimeout(() => {
-      try {
-        const router = Routing.useRouter();
-        router.replace(path);
-      } catch (error) {
-        console.warn("Navigation failed after retry:", error);
-      }
-    }, 100);
-  }
-};
 
 const COLLECTION = "filmHunt";
 
@@ -93,6 +64,7 @@ export async function signUp(email, password, name, phone) {
     );
 
     runInAction(() => {
+      reactiveModel.clearModel();
       reactiveModel.userDetails = { id: user.uid, name, email, phone };
       reactiveModel.watchlist = [];
       reactiveModel.ready = true;
@@ -112,9 +84,10 @@ export async function signIn(email, password) {
     password
   );
   const user = userCredential.user;
-  console.log("Signed in:", user.email);
+  console.log("Signed in:", user.email, user.uid, user.displayName);
 
   runInAction(() => {
+    reactiveModel.clearModel();
     reactiveModel.userDetails = {
       id: user.uid,
       name: "",
@@ -130,20 +103,21 @@ export async function signIn(email, password) {
 }
 
 export async function logOut() {
-  await signOut(auth);
+  
   runInAction(() => {
+    reactiveModel.clearModel();
     reactiveModel.userDetails = { id: null, name: "", email: "", phone: "" };
     reactiveModel.watchlist = [];
     reactiveModel.ready = false;
+    reactiveModel.clearModel();
   });
+  await signOut(auth);
   console.log("Signed out");
 }
 
-
-let navigationAttempted = false;
-
 onAuthStateChanged(auth, (user) => {
   if (user) {
+    reactiveModel.clearModel();
     console.log("User is signed in:", user.uid);
     runInAction(() => {
       reactiveModel.userDetails = {
@@ -156,37 +130,16 @@ onAuthStateChanged(auth, (user) => {
       reactiveModel.ready = false;
     });
     connectToPersistence();
-    
-
-    if (!navigationAttempted) {
-      navigationAttempted = true;
-            setTimeout(() => {
-        try {
-          const router = Routing.useRouter();
-          router.replace("/(tabs)/home");
-        } catch (error) {
-          console.log("Router not ready yet, will try during component rendering");
-        }
-      }, 500);
-    }
+    router.push("/(tabs)/home");
   } else {
     runInAction(() => {
+      reactiveModel.clearModel();
       reactiveModel.userDetails = { id: null, name: "", email: "", phone: "" };
       reactiveModel.watchlist = [];
       reactiveModel.ready = false;
+      reactiveModel.clearModel();
     });
-    
-    if (!navigationAttempted) {
-      navigationAttempted = true;
-      setTimeout(() => {
-        try {
-          const router = Routing.useRouter();
-          router.replace("/login");
-        } catch (error) {
-          console.log("Router not ready yet, will try during component rendering");
-        }
-      }, 500);
-    }
+    router.push("/login");
   }
 });
 
@@ -204,10 +157,10 @@ export function connectToPersistence() {
       runInAction(() => {
         reactiveModel.watchlist = data["Watchlist"] || [];
         reactiveModel.userDetails = {
-          id: data["UserID"] ?? uid,
-          name: data["Full Name"] ?? reactiveModel.userDetails.name,
-          email: data["Email"] ?? reactiveModel.userDetails.email,
-          phone: data["Phone Number"] ?? reactiveModel.userDetails.phone,
+          id: data["UserID"],
+          name: data["Full Name"] ,
+          email: data["Email"] ,
+          phone: data["Phone Number"],
         };
         reactiveModel.ready = true;
       });
@@ -357,14 +310,3 @@ export async function getAverageRatingForWatchlist(targetUserId) {
   const sum = feedback.reduce((acc, cur) => acc + cur.rating, 0);
   return sum / feedback.length;
 }
-
-// to make nav work
-export function useAuthNavigation() {
-  const router = Routing.useRouter();
-  
-  return {
-    navigateAfterAuth: (path) => {
-      router.replace(path);
-    }
-  };
-}              

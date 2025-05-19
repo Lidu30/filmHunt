@@ -27,6 +27,7 @@ useEffect(() => {
 
   const handleLogout = async () => {
     await logOut()
+    reactiveModel.clearModel();
     router.replace("/login")
   }
 
