@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-
+import React, { useState } from 'react';
 
 export function SignupView({
   signup,
@@ -16,13 +15,18 @@ export function SignupView({
   pass,
   setPass,
   pass2,
-  setPass2
+  setPass2,
+  error
 }) {
-  const router = useRouter()
+  const router = useRouter();
   const [secureEntry, setSecureEntry] = useState(true);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Create Your Account</Text>
+      
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
       <View style={styles.inputGroup}>
         <Ionicons name="person-outline" size={20} color="#bbb" />
         <TextInput
@@ -31,8 +35,10 @@ export function SignupView({
           style={styles.input}
           value={name}
           onChangeText={setName}
+          autoCapitalize="words"
         />
       </View>
+      
       <View style={styles.inputGroup}>
         <Ionicons name="call-outline" size={20} color="#bbb" />
         <TextInput
@@ -44,6 +50,7 @@ export function SignupView({
           onChangeText={setPhone}
         />
       </View>
+      
       <View style={styles.inputGroup}>
         <Ionicons name="mail-outline" size={20} color="#bbb" />
         <TextInput
@@ -56,10 +63,11 @@ export function SignupView({
           onChangeText={setUser}
         />
       </View>
+
       <View style={styles.inputGroup}>
         <Ionicons name="lock-closed-outline" size={20} color="#bbb" />
         <TextInput
-          placeholder="Password"
+          placeholder="Password (min 6 characters)"
           placeholderTextColor="#888"
           style={styles.input}
           secureTextEntry={secureEntry}
@@ -74,6 +82,7 @@ export function SignupView({
           />
         </TouchableOpacity>
       </View>
+
       <View style={styles.inputGroup}>
         <Ionicons name="lock-closed-outline" size={20} color="#bbb" />
         <TextInput
@@ -85,21 +94,23 @@ export function SignupView({
           onChangeText={setPass2}
         />
       </View>
+
       <LinearGradient
         colors={["#4c669f", "#3b5998", "#192f6a"]}
-        start={{ x: 0, y: 1 }} 
-        end={{ x: 0, y: 0 }}   
+        start={{ x: 0, y: 1 }}
+        end={{ x: 0, y: 0 }}
         style={styles.submitButton}
       >
         <Pressable onPress={signup} style={styles.pressable}>
           <Text style={styles.buttonText}>Sign Up</Text>
         </Pressable>
       </LinearGradient>
+
       <View style={styles.footer}>
         <Text style={styles.footerText}>Already have an account? </Text>
         <Pressable onPress={() => router.replace('/login')}>
           <Text style={styles.link}>Log In</Text>
-      </Pressable>
+        </Pressable>
       </View>
     </View>
   );
@@ -118,6 +129,11 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 30,
     alignSelf: 'center'
+  },
+  errorText: {
+    color: '#ff4444',
+    textAlign: 'center',
+    marginBottom: 16,
   },
   inputGroup: {
     flexDirection: 'row',

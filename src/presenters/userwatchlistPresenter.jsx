@@ -94,6 +94,7 @@ export const UserWatchlist = observer(function UserWatchlist(props) {
       .then(([feedback, avg]) => {
         setFeedbackList(feedback);
         setAvgRating(avg);
+        console.log("Feedback submitted successfully.");
       })
       .catch(error => {
         console.error("Error submitting feedback:", error);

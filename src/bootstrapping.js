@@ -21,10 +21,19 @@ function setDummyMovie(results) {
     }
 }
 
+reaction(
+    () => reactiveModel.currentMovie,
+    (currentMovie) => {
+        if (currentMovie) {
+            console.log("Current movie changed:", currentMovie);
+        }
+    }
+);
+
 searchMovies({ query: "greatest showman" })
     .then(setDummyMovie)
     .then(console.log)
 
 connectToPersistence(reactiveModel, reaction); 
-/* fetchFullNamesArray(); */console.log("userDetails", reactiveModel.userDetails);
+/* fetchFullNamesArray(); *//* console.log("userDetails", reactiveModel.userDetails); */
 
