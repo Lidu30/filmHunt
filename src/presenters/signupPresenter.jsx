@@ -10,25 +10,40 @@ export const SignupPresenter = observer(() => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [password2, setPassword2] = useState("")
+  const [error, setError] = useState("")
 
-  const router = useRouter();
+  const router = useRouter()
+
+  const handleSignup = async () => {
+    setError("")
+    
+    if (!name || !phone || !email || !password || !password2) {
+      setError("Please fill in all fields")
+      return
+    }
+
+    if (password !== password2) {
+      setError("Passwords do not match")
+      return
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters")
+      return
+    }
+
+    try {
+      await signUp(email, password, name, phone)
+      router.replace("/(tabs)/home")
+    } catch (err) {
+      setError(err.message || "Signup failed. Please try again.")
+    }
+  }
 
   return (
     <SignupView
-      signup={() => {
-        if (password !== password2) {
-          console.error("Passwords do not match")
-          return
-        }
-
-        signUp(email, password, name, phone)
-          .then(() => {
-            router.replace("/(tabs)/home")
-          })
-          .catch((error) => {
-            alert("Sign-up failed: " + error.message)
-          })
-      }}
+      signup={handleSignup}
+      error={error}
       setName={setName}
       name={name}
       setPhone={setPhone}
@@ -39,9 +54,8 @@ export const SignupPresenter = observer(() => {
       pass={password}
       setPass2={setPassword2}
       pass2={password2}
-    ></SignupView>
+    />
   )
-
 })
 
-export default SignupPresenter;
+export default SignupPresenter
