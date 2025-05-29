@@ -51,14 +51,22 @@ const COLLECTION = "filmHunt"
 const MOVIE_REVIEWS_COLLECTION = "movie_reviews"
 
 export function connectToPersistence(reactiveModel, watchFunction) {
-  reactiveModel.ready = false
-
   onAuthStateChanged(auth, (user) => {
     if (!user) {
       console.warn("User not authenticated, skipping Firestore sync")
+      // Set default values for unauthenticated users
+      reactiveModel.watchlist = []
+      reactiveModel.userDetails = {
+        id: null,
+        email: "",
+        name: "",
+        phone: ""
+      }
+      reactiveModel.ready = true
       return
     }
 
+    // User is authenticated, proceed with Firestore sync
     const userDocRef = doc(db, COLLECTION, user.uid)
 
     watchFunction(getModelStateACB, saveModelToFirestoreACB)

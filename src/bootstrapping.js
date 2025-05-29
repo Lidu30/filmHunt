@@ -8,6 +8,8 @@ configure({ enforceActions: "never" });
 export const reactiveModel = observable(model)
 reactiveModel.user = null; //?
 
+reactiveModel.ready = true;
+
 // TODO side effects, connect to persistence etc
 global.myModel = reactiveModel; // make application state available in Console
 
