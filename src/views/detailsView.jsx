@@ -5,12 +5,14 @@ import {
     StyleSheet,
     Text,
     View,
+    TouchableOpacity,
+    TextInput,
+    Alert,
   } from "react-native"
 import { useRouter } from "expo-router"
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-
 
 const RatingStar = ({ filled, onPress, value }) => (
   <TouchableOpacity onPress={() => onPress(value)}>
@@ -23,7 +25,6 @@ const RatingStar = ({ filled, onPress, value }) => (
 );
 
 export function DetailsView(props) {
-
     const movie = props.movie
     const [showReviewForm, setShowReviewForm] = useState(false);
     const [rating, setRating] = useState(0);
@@ -31,16 +32,18 @@ export function DetailsView(props) {
     const [submittingReview, setSubmittingReview] = useState(false);
 
     const router = useRouter();
+
     function addToWatchlistACB() {
-        // console.log('Current Movie:', movie);
-        // console.log('Is in Watchlist:', props.inWatchList);
         props.addingToWatchList()
-        // console.log('Is in Watchlist:', props.inWatchList);
+    }
+
+    function posterPathACB() {
+        return "https://image.tmdb.org/t/p/w500" + movie.backdrop_path;
     }
 
     const handleSetRating = (value) => {
         setRating(value);
-    }
+    };
 
     const handleSubmitReview = async () => {
         if (!rating && !comment.trim()) {
@@ -70,10 +73,6 @@ export function DetailsView(props) {
             setComment("");
         }
     };
-
-    function posterPathACB() {
-        return "https://image.tmdb.org/t/p/w500" + movie.backdrop_path;
-    }
 
     return (
         <ScrollView style={styles.base}>
@@ -123,7 +122,7 @@ export function DetailsView(props) {
                 <Text style={styles.grayText}>{props.movieCast}</Text>
             </View>
 
-            <View style={styles.detailscontainer} >
+            <View style={styles.container} >
                 <Text style={styles.whiteText}>Available on:</Text>
                 <Text style={styles.grayText}>{props.streamingPlatforms.length > 0
                     ? props.streamingPlatforms
@@ -132,6 +131,7 @@ export function DetailsView(props) {
                 </Text>
             </View>
 
+            {/* User Reviews Section */}
             {props.currentMovieReviews && props.currentMovieReviews.length > 0 && (
                 <View style={styles.container}>
                     <View style={styles.reviewsHeader}>

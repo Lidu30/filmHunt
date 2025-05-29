@@ -14,12 +14,13 @@ global.myModel = reactiveModel; // make application state available in Console
 // Load genre names at startup
 reactiveModel.loadAllGenres();
 
+// Load reviewed movies at startup
 reactiveModel.loadReviewedMovies();
 
 function setDummyMovie(results) {
-    const firstMovie = results[0]; // grab the first result
+    const firstMovie = results.results[0]; // grab the first result from results array
     if (firstMovie) {
-        myModel.currentMovie = firstMovie; // assign to model
+        myModel.setCurrentMovie(firstMovie); // assign to model
     }
 }
 
@@ -38,4 +39,3 @@ searchMovies({ query: "greatest showman" })
 
 connectToPersistence(reactiveModel, reaction); 
 /* fetchFullNamesArray(); *//* console.log("userDetails", reactiveModel.userDetails); */
-

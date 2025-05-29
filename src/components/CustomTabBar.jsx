@@ -33,7 +33,7 @@ export function CustomTabBar({ state, descriptors, navigation }) {
           ? options.tabBarIcon({
               focused: isFocused,
               color: '#fff',
-              size: 24,
+              size: 20, // Reduced size for 6 tabs
             })
           : null
 
@@ -59,12 +59,12 @@ export function CustomTabBar({ state, descriptors, navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    // position: 'absolute',
-    height: 60,
+    height: 65, // Slightly taller for 6 tabs
     borderRadius: 30,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
+    paddingHorizontal: 5, // Add horizontal padding
     //shadow for iOS
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 5 },
@@ -76,13 +76,16 @@ const styles = StyleSheet.create({
   tabButton: {
     flex: 1,
     alignItems: 'center',
+    paddingVertical: 4,
   },
   label: {
     marginTop: 2,
-    fontSize: 12,
+    fontSize: 10, // Smaller font for 6 tabs
+    textAlign: 'center',
   },
   active: {
     color: '#fff',
+    fontWeight: '600',
   },
   inactive: {
     color: '#ddd',

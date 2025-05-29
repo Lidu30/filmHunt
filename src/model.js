@@ -29,6 +29,7 @@ const model = {
     this.currentMoviePlatforms = await getStreamingPlatforms(movie.id)
     // console.log("LOOK AT THIS:", this.currentMoviePlatforms)
     // console.log(this.currentMovie);
+    await this.loadCurrentMovieReviews()
   },
 
 
