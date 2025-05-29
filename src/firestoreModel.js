@@ -8,7 +8,8 @@ import {
   collection, 
   where, 
   query,
-  serverTimestamp 
+  serverTimestamp,
+  orderBy
 } from "firebase/firestore"
 import {
   initializeAuth,
@@ -36,6 +37,7 @@ export const auth = initializeAuth(app, {
 })
 
 const COLLECTION = "filmHunt"
+const MOVIE_REVIEWS_COLLECTION = "movie_reviews"
 
 export function connectToPersistence(reactiveModel, watchFunction) {
   reactiveModel.ready = false
@@ -228,4 +230,101 @@ export async function getAverageRatingForWatchlist(targetUserId) {
 
   const sum = feedback.reduce((acc, cur) => acc + (cur.rating || 0), 0)
   return sum / feedback.length
+}
+
+export async function submitMovieReview(movieId, movieData, userId, userName, rating, comment) {
+  if (!rating && !comment?.trim()) {
+    throw new Error("Must provide either rating or comment.")
+  }
+
+  const docId = `${movieId}_${userId}`
+  const reviewRef = doc(db, MOVIE_REVIEWS_COLLECTION, docId)
+
+  const payload = {
+    movieId: movieId,
+    movieTitle: movieData.title,
+    moviePosterPath: movieData.poster_path,
+    movieReleaseDate: movieData.release_date,
+    movieOverview: movieData.overview,
+    userId: userId,
+    userName: userName,
+    timestamp: serverTimestamp(),
+  }
+
+  if (rating) payload.rating = rating
+  if (comment?.trim()) payload.comment = comment.trim()
+
+  await setDoc(reviewRef, payload, { merge: true })
+}
+
+export async function getMovieReviews(movieId) {
+  const q = query(
+    collection(db, MOVIE_REVIEWS_COLLECTION),
+    where("movieId", "==", movieId)
+  )
+
+  const snapshot = await getDocs(q)
+  return snapshot.docs.map((doc) => doc.data())
+}
+
+export async function getAllReviewedMovies() {
+  try {
+    const snapshot = await getDocs(collection(db, MOVIE_REVIEWS_COLLECTION))
+    const movieReviews = {}
+
+    // Group reviews by movieId
+    snapshot.docs.forEach((doc) => {
+      const data = doc.data()
+      const movieId = data.movieId
+
+      if (!movieReviews[movieId]) {
+        movieReviews[movieId] = {
+          movieId,
+          movieTitle: data.movieTitle,
+          moviePosterPath: data.moviePosterPath,
+          movieReleaseDate: data.movieReleaseDate,
+          movieOverview: data.movieOverview,
+          reviews: [],
+          totalRating: 0,
+          ratingCount: 0,
+          averageRating: 0
+        }
+      }
+
+      movieReviews[movieId].reviews.push({
+        userId: data.userId,
+        userName: data.userName,
+        rating: data.rating,
+        comment: data.comment,
+        timestamp: data.timestamp
+      })
+
+      if (data.rating) {
+        movieReviews[movieId].totalRating += data.rating
+        movieReviews[movieId].ratingCount += 1
+      }
+    })
+
+    // Calculate average ratings and convert to array
+    const movieArray = Object.values(movieReviews).map(movie => ({
+      ...movie,
+      averageRating: movie.ratingCount > 0 ? movie.totalRating / movie.ratingCount : 0
+    }))
+
+    // Sort by average rating (descending)
+    return movieArray.sort((a, b) => b.averageRating - a.averageRating)
+  } catch (error) {
+    console.error("Error getting reviewed movies:", error)
+    return []
+  }
+}
+
+export async function getAverageRatingForMovie(movieId) {
+  const reviews = await getMovieReviews(movieId)
+  const ratingsOnly = reviews.filter(review => review.rating).map(review => review.rating)
+  
+  if (ratingsOnly.length === 0) return null
+  
+  const sum = ratingsOnly.reduce((acc, rating) => acc + rating, 0)
+  return sum / ratingsOnly.length
 }

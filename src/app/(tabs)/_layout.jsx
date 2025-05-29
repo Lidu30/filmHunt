@@ -40,6 +40,13 @@ export default observer(function RootLayout() {
             }}
           />
           <Tabs.Screen
+            name="reviewedMovies"
+            options={{
+              title: "Reviews",
+              tabBarIcon: () => <MaterialIcons name="rate-review" size={24} color="white" />,
+            }}
+          />
+          <Tabs.Screen
             name="profile"
             options={{
               title: "User Profile",

@@ -17,6 +17,15 @@ export const Details = observer(function Details(props) {
     console.log("Watchlist:", props.model.watchlist);
   }
 
+  async function handleSubmitReview(rating, comment) {
+    try {
+      await props.model.submitMovieReview(rating, comment);
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      throw error; // Re-throw to let the view handle the error
+    }
+  }
+
   return (
     <DetailsView
       movie={props.model.currentMovie}
@@ -25,6 +34,9 @@ export const Details = observer(function Details(props) {
       streamingPlatforms={props.model.currentMoviePlatforms.join("\n")}
       addingToWatchList={addToWatchListACB}
       inWatchList={props.model.watchlistHas(movieId)}
+      currentMovieReviews={props.model.currentMovieReviews}
+      currentMovieAverageRating={props.model.currentMovieAverageRating}
+      onSubmitReview={handleSubmitReview}
     />
   );
 });

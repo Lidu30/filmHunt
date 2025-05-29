@@ -17,6 +17,9 @@ const model = {
   currentMoviePromiseState: {},
   ready: false,
   genres: [],
+  reviewedMovies: [],
+  currentMovieReviews: [],
+  currentMovieAverageRating: null,
  
   async setCurrentMovie(movie) {
     this.currentMovie = movie;
@@ -41,6 +44,62 @@ const model = {
   //   u set it like this 
   //   we'll assign the id ourselves */
   // },
+
+
+   async loadCurrentMovieReviews() {
+    if (!this.currentMovie) {
+      this.currentMovieReviews = []
+      this.currentMovieAverageRating = null
+      return
+    }
+
+    try {
+      const { getMovieReviews, getAverageRatingForMovie } = await import('./firestoreModel')
+      this.currentMovieReviews = await getMovieReviews(this.currentMovie.id)
+      this.currentMovieAverageRating = await getAverageRatingForMovie(this.currentMovie.id)
+    } catch (error) {
+      console.error("Error loading movie reviews:", error)
+      this.currentMovieReviews = []
+      this.currentMovieAverageRating = null
+    }
+  },
+
+  async loadReviewedMovies() {
+    try {
+      const { getAllReviewedMovies } = await import('./firestoreModel')
+      this.reviewedMovies = await getAllReviewedMovies()
+    } catch (error) {
+      console.error("Error loading reviewed movies:", error)
+      this.reviewedMovies = []
+    }
+  },
+
+  async submitMovieReview(rating, comment) {
+    if (!this.currentMovie || !this.userDetails.id) {
+      throw new Error("No current movie or user not logged in")
+    }
+
+    try {
+      const { submitMovieReview } = await import('./firestoreModel')
+      await submitMovieReview(
+        this.currentMovie.id,
+        this.currentMovie,
+        this.userDetails.id,
+        this.userDetails.name,
+        rating,
+        comment
+      )
+      
+      // Reload reviews for current movie
+      await this.loadCurrentMovieReviews()
+      
+      // Reload all reviewed movies
+      await this.loadReviewedMovies()
+    } catch (error) {
+      console.error("Error submitting movie review:", error)
+      throw error
+    }
+  },
 
   setUserDetails(userData) {
     if (userData) {
@@ -121,6 +180,9 @@ const model = {
     this.currentMovieCast = [];
     this.currentMoviePlatforms = [];
     this.currentMoviePromiseState = {};
+    this.reviewedMovies = [];
+    this.currentMovieReviews = [];
+    this.currentMovieAverageRating = null;
  }
 };
 
