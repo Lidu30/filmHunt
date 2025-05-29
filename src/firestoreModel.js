@@ -9,11 +9,10 @@ import {
   where, 
   query,
   serverTimestamp,
-  orderBy
+  orderBy 
 } from "firebase/firestore"
 import {
   initializeAuth,
-  getReactNativePersistence,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
@@ -32,9 +31,21 @@ global.doc = doc
 global.setDoc = setDoc
 global.db = db
 
-export const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage),
-})
+// Try to initialize auth with persistence, fallback to regular auth if it fails
+let auth;
+try {
+  // For React Native environments
+  const { getReactNativePersistence } = require("firebase/auth");
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage),
+  });
+} catch (error) {
+  // Fallback for web or other environments
+  console.warn("React Native persistence not available, using default auth:", error.message);
+  auth = getAuth(app);
+}
+
+export { auth };
 
 const COLLECTION = "filmHunt"
 const MOVIE_REVIEWS_COLLECTION = "movie_reviews"
@@ -232,6 +243,7 @@ export async function getAverageRatingForWatchlist(targetUserId) {
   return sum / feedback.length
 }
 
+// NEW MOVIE REVIEW FUNCTIONS
 export async function submitMovieReview(movieId, movieData, userId, userName, rating, comment) {
   if (!rating && !comment?.trim()) {
     throw new Error("Must provide either rating or comment.")
