@@ -17,7 +17,7 @@ export const SignupPresenter = observer(() => {
   const handleSignup = async () => {
     setError("")
     
-    if (!name || !phone || !email || !password || !password2) {
+    if (!name || !email || !password || !password2) {
       setError("Please fill in all fields")
       return
     }
