@@ -76,6 +76,10 @@ const model = {
   },
 
   async submitMovieReview(rating, comment) {
+    console.log("submitMovieReview called with:", rating, comment);
+    console.log("Current movie:", this.currentMovie);
+    console.log("Current user:", this.userDetails);
+    
     if (!this.currentMovie || !this.userDetails.id) {
       throw new Error("No current movie or user not logged in")
     }

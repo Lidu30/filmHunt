@@ -46,14 +46,10 @@ export function DetailsView(props) {
     };
 
     const handleSubmitReview = async () => {
-        if (!rating && !comment.trim()) {
-            Alert.alert("Error", "Please provide a rating or comment");
-            return;
-        }
-
+       
         setSubmittingReview(true);
         try {
-            await props.onSubmitReview?.(rating, comment);
+            await props.onSubmitReview(rating, comment);
             setRating(0);
             setComment("");
             setShowReviewForm(false);
@@ -64,6 +60,7 @@ export function DetailsView(props) {
         } finally {
             setSubmittingReview(false);
         }
+        
     };
 
     const toggleReviewForm = () => {

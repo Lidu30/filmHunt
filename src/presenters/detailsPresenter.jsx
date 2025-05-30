@@ -36,7 +36,14 @@ export const Details = observer(function Details(props) {
       inWatchList={props.model.watchlistHas(movieId)}
       currentMovieReviews={props.model.currentMovieReviews}
       currentMovieAverageRating={props.model.currentMovieAverageRating}
-      onSubmitReview={handleSubmitReview}
+      onSubmitReview={async (rating, comment) => {
+        try {
+          await props.model.submitMovieReview(rating, comment);
+        } catch (error) {
+          console.error("Error submitting review:", error);
+          throw error;
+        }
+      }}
     />
   );
 });
