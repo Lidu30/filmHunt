@@ -13,7 +13,6 @@ import {
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
 
-// Import your separated component
 import { SwipeableMovieCard } from "../components/swipeableMoviecard";
 
 export const HomepageView = observer(({ 

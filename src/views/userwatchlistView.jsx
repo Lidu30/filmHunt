@@ -155,7 +155,7 @@ export const UserWatchlistView = ({
                 key={value}
                 filled={rating >= value}
                 onPress={() => {
-                  console.log("Star clicked:", value); // Debug log
+                  console.log("Star clicked:", value); 
                   setRating(value);
                 }}
               />
@@ -169,7 +169,7 @@ export const UserWatchlistView = ({
             multiline
             value={comment}
             onChangeText={(text) => {
-              console.log("Comment changed:", text); // Debug log
+              console.log("Comment changed:", text); 
               setComment(text);
             }}
             maxLength={500}
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingTop: 50, // Moved down from status bar area
+    paddingTop: 50, 
     paddingBottom: 16,
     justifyContent: "space-between",
   },

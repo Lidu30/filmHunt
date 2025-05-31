@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useRouter } from "expo-router"; // Added missing import
+import { useRouter } from "expo-router"; 
 import {
   getWatchlistById,
   getFeedbackForWatchlist,
@@ -78,7 +78,7 @@ export const UserWatchlist = observer(function UserWatchlist(props) {
     getMovieDetails(movie.id)
       .then((details) => {
         reactiveModel.setCurrentMovie(details);
-        // Navigate to movie details if needed
+        // nvigate to movie details if needed
         // router.push(`/movie/${movie.id}`);
       })
       .catch((error) => {
