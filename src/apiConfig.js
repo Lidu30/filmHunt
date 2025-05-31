@@ -82,8 +82,8 @@ function getMovieDetails(searchParams) {
   
 }
 
-function getTopRatedMovies() {
-  const url = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1';
+function getTopRatedMovies(page = 1) {
+  const url = `https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=${page}`
 
   return fetch(url, {
     method: 'GET',
