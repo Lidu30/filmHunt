@@ -12,10 +12,10 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { LinearGradient } from "expo-linear-gradient";
-import { reactiveModel } from "../bootstrapping";
+
 
 export function ReviewedMoviesView(props) {
-  const { reviewedMovies, loading, onMovieSelect, onAddToWatchlist } = props;
+  const { reviewedMovies, loading, watchlist, onMovieSelect, onAddToWatchlist } = props;
   const router = useRouter();
 
   function renderReviewedMovieItem({ item }) {
@@ -31,7 +31,7 @@ export function ReviewedMoviesView(props) {
 
     // Get the first comment for display
     const firstComment = item.reviews.find(review => review.comment)?.comment || "No comments yet";
-    const isInWatchlist = reactiveModel.watchlist.some((m) => m.id === item.movieId);
+    const isInWatchlist = watchlist.some((m) => m.id === item.movieId);
 
     function previewMovieACB() {
       onMovieSelect(item);

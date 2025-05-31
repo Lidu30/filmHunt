@@ -63,6 +63,7 @@ export const ReviewedMovies = observer(function ReviewedMovies(props) {
 
   return (
     <ReviewedMoviesView
+      watchlist={props.model.watchlist}
       reviewedMovies={props.model.reviewedMovies}
       loading={loading}
       onMovieSelect={handleMovieSelect}
