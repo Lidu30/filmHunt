@@ -6,6 +6,10 @@ import { SuspenseView } from "src/views/suspenseView";
 
 export const Details = observer(function Details(props) {
   const movieId = props.model.currentMovie?.id;
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [submittingReview, setSubmittingReview] = useState(false);
 
   if (!movieId) {
     return <EmptyDetailsView />;
@@ -17,14 +21,34 @@ export const Details = observer(function Details(props) {
     console.log("Watchlist:", props.model.watchlist);
   }
 
-  async function handleSubmitReview(rating, comment) {
+  const handleSubmitReview = async () => {
+    setSubmittingReview(true);
     try {
       await props.model.submitMovieReview(rating, comment);
+      // Reset form state
+      setRating(0);
+      setComment("");
+      setShowReviewForm(false);
+      // You could show success message here or let model handle it
     } catch (error) {
       console.error("Error submitting review:", error);
-      throw error; // Re-throw to let the view handle the error
+      // Handle error state
+    } finally {
+      setSubmittingReview(false);
     }
-  }
+  };
+
+  const toggleReviewForm = () => {
+    setShowReviewForm(!showReviewForm);
+    if (!showReviewForm) {
+      setRating(0);
+      setComment("");
+    }
+  };
+
+  const handleSetRating = (value) => {
+    setRating(value);
+  };
 
   return (
     <DetailsView
@@ -36,14 +60,14 @@ export const Details = observer(function Details(props) {
       inWatchList={props.model.watchlistHas(movieId)}
       currentMovieReviews={props.model.currentMovieReviews}
       currentMovieAverageRating={props.model.currentMovieAverageRating}
-      onSubmitReview={async (rating, comment) => {
-        try {
-          await props.model.submitMovieReview(rating, comment);
-        } catch (error) {
-          console.error("Error submitting review:", error);
-          throw error;
-        }
-      }}
+      showReviewForm={showReviewForm}
+      rating={rating}
+      comment={comment}
+      submittingReview={submittingReview}
+      onSubmitReview={handleSubmitReview}
+      onToggleReviewForm={toggleReviewForm}
+      onSetRating={handleSetRating}
+      onCommentChange={setComment}
     />
   );
 });

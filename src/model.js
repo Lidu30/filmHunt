@@ -1,5 +1,4 @@
-import { getAllGenreNames, getCast, getStreamingPlatforms } from './apiConfig'
-
+import { getAllGenreNames, getCast, getStreamingPlatforms, getSimilarMovies } from './apiConfig'
 const model = {
 // user info for authentication
   userDetails: {
@@ -20,6 +19,39 @@ const model = {
   reviewedMovies: [],
   currentMovieReviews: [],
   currentMovieAverageRating: null,
+  recommendations: [],
+  loadingRecommendations: false,
+
+  
+  async loadRecommendations() {
+    if (this.watchlist.length === 0) {
+      this.recommendations = [];
+      return;
+    }
+
+    this.loadingRecommendations = true;
+    
+    try {
+      const sortedByRating = [...this.watchlist].sort((a, b) => 
+        (b.vote_average) - (a.vote_average)
+      );
+      const sourceMovie = sortedByRating[0];
+      
+      const similarMovies = await getSimilarMovies(sourceMovie.id);
+      
+      const watchlistIds = this.watchlist.map(m => m.id);
+      const filteredRecommendations = similarMovies.results.filter(
+        movie => !watchlistIds.includes(movie.id)
+      ).slice(0, 30);
+      
+      this.recommendations = filteredRecommendations;
+    } catch (error) {
+      console.error("Error getting recommendations:", error);
+      this.recommendations = [];
+    } finally {
+      this.loadingRecommendations = false;
+    }
+  },
  
   async setCurrentMovie(movie) {
     this.currentMovie = movie;

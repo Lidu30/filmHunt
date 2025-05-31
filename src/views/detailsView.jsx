@@ -26,13 +26,7 @@ const RatingStar = ({ filled, onPress, value }) => (
 
 export function DetailsView(props) {
     const movie = props.movie
-    const [showReviewForm, setShowReviewForm] = useState(false);
-    const [rating, setRating] = useState(0);
-    const [comment, setComment] = useState("");
-    const [submittingReview, setSubmittingReview] = useState(false);
-
-    const router = useRouter();
-
+    
     function addToWatchlistACB() {
         props.addingToWatchList()
     }
@@ -41,36 +35,7 @@ export function DetailsView(props) {
         return "https://image.tmdb.org/t/p/w500" + movie.backdrop_path;
     }
 
-    const handleSetRating = (value) => {
-        setRating(value);
-    };
-
-    const handleSubmitReview = async () => {
-       
-        setSubmittingReview(true);
-        try {
-            await props.onSubmitReview(rating, comment);
-            setRating(0);
-            setComment("");
-            setShowReviewForm(false);
-            Alert.alert("Success", "Your review has been submitted!");
-        } catch (error) {
-            Alert.alert("Error", "Failed to submit review. Please try again.");
-            console.error("Review submission error:", error);
-        } finally {
-            setSubmittingReview(false);
-        }
-        
-    };
-
-    const toggleReviewForm = () => {
-        setShowReviewForm(!showReviewForm);
-        if (!showReviewForm) {
-            setRating(0);
-            setComment("");
-        }
-    };
-
+   
     return (
         <ScrollView style={styles.base}>
             
@@ -155,27 +120,27 @@ export function DetailsView(props) {
             <View style={styles.container}>
                 <TouchableOpacity 
                     style={styles.reviewToggleButton}
-                    onPress={toggleReviewForm}
+                    onPress={props.onToggleReviewForm}
                 >
                     <MaterialIcons 
-                        name={showReviewForm ? "close" : "rate-review"} 
+                        name={props.showReviewForm ? "close" : "rate-review"} 
                         size={20} 
                         color="#fff" 
                     />
                     <Text style={styles.reviewToggleText}>
-                        {showReviewForm ? "Cancel Review" : "Write a Review"}
+                        {props.showReviewForm ? "Cancel Review" : "Write a Review"}
                     </Text>
                 </TouchableOpacity>
 
-                {showReviewForm && (
+                {props.showReviewForm && (
                     <View style={styles.reviewForm}>
                         <Text style={styles.reviewFormLabel}>Rate this movie:</Text>
                         <View style={styles.starRow}>
                             {[1, 2, 3, 4, 5].map((value) => (
                                 <RatingStar 
                                     key={value} 
-                                    filled={rating >= value}
-                                    onPress={handleSetRating}
+                                    filled={props.rating >= value}
+                                    onPress={props.onSetRating}
                                     value={value}
                                 />
                             ))}
@@ -186,8 +151,8 @@ export function DetailsView(props) {
                             placeholder="Share your thoughts about this movie..."
                             placeholderTextColor="#888"
                             style={styles.reviewInput}
-                            value={comment}
-                            onChangeText={setComment}
+                            value={props.comment}
+                            onChangeText={props.onCommentChange}
                             multiline
                             numberOfLines={4}
                         />
@@ -198,16 +163,16 @@ export function DetailsView(props) {
                             end={{ x: 0, y: 0 }}
                             style={[
                                 styles.submitReviewButton,
-                                (!rating && !comment.trim()) && styles.disabledButton
+                                (!props.rating && !props.comment.trim()) && styles.disabledButton
                             ]}
                         >
                             <TouchableOpacity
                                 style={styles.submitReviewInner}
-                                onPress={handleSubmitReview}
-                                disabled={(!rating && !comment.trim()) || submittingReview}
+                                onPress={props.onSubmitReview}
+                                disabled={props.submittingReview}
                             >
                                 <Text style={styles.submitReviewText}>
-                                    {submittingReview ? "Submitting..." : "Submit Review"}
+                                    {props.submittingReview ? "Submitting..." : "Submit Review"}
                                 </Text>
                             </TouchableOpacity>
                         </LinearGradient>

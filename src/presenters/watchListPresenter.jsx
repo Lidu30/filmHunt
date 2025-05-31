@@ -1,47 +1,12 @@
 import { observer } from "mobx-react-lite";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { WatchListView } from "../views/watchListView";
-import { getSimilarMovies } from "../apiConfig";
+// import { getSimilarMovies } from "../apiConfig";
 
 export const WatchList = observer(function WatchList(props) {
-  const [recommendations, setRecommendations] = useState([]);
-  const [loading, setLoading] = useState(false);
-
   useEffect(() => {
-    async function fetchRecommendations() {
-      if (props.model.watchlist.length === 0) {
-        setRecommendations([]);
-        return;
-      }
-      
-      setLoading(true);
-      
-      try {
-        // Get the most recently added movie from watchlist (we can probably come up with a better idea)
-        // const sourceMovie = props.model.watchlist[props.model.watchlist.length - 1];
-        const sortedByRating = [...props.model.watchlist].sort((a, b) => 
-          (b.vote_average) - (a.vote_average)
-        );
-        const sourceMovie = sortedByRating[0];
-        // Fetch similar movies
-        const similarMovies = await getSimilarMovies(sourceMovie.id);
-        
-        // Filter out movies already in watchlist
-        const watchlistIds = props.model.watchlist.map(m => m.id);
-        const filteredRecommendations = similarMovies.results.filter(
-          movie => !watchlistIds.includes(movie.id)
-        ).slice(0, 30); // Limit to 8 recommendations
-        
-        setRecommendations(filteredRecommendations);
-      } catch (error) {
-        console.error("Error getting recommendations:", error);
-        setRecommendations([]);
-      } finally {
-        setLoading(false);
-      }
-    }
-    
-    fetchRecommendations();
+    // ✅ Only call model method, no business logic
+    props.model.loadRecommendations();
   }, [props.model.watchlist]);
 
 
@@ -64,8 +29,8 @@ export const WatchList = observer(function WatchList(props) {
   return (
     <WatchListView 
       watchList={props.model.watchlist}
-      recommendations={recommendations}
-      loadingRecommendations={loading}
+      recommendations={props.model.recommendations}
+      loadingRecommendations={props.model.loadingRecommendations}
       movieChosen={showMovieACB}
       onDeleteMovie={deleteMovieACB}
       onAddToWatchlist={addToWatchlistACB}
