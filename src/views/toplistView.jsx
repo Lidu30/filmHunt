@@ -1,83 +1,45 @@
-import { View, Text, FlatList, StyleSheet, Pressable, TextInput, TouchableOpacity } from "react-native";
-import { useState, useEffect, useMemo } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Pressable,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 
-export function TopListView({ fullNames = [], idToNameMap = {}, onWatchlistPress }) {
-  const [selectedId, setSelectedId] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
-  
-  const nameToIdMap = useMemo(() => {
-    const mapping = {};
-    Object.entries(idToNameMap).forEach(([id, name]) => {
-      if (name) mapping[name] = id;
-    });
-    return mapping;
-  }, [idToNameMap]);
-
-  useEffect(() => {
-    const initialData = fullNames.map(name => ({ 
-      name, 
-      id: nameToIdMap[name] || null 
-    }));
-    setFilteredData(initialData);
-  }, [fullNames, nameToIdMap]);
-
-  useEffect(() => {
-    if (searchQuery.trim() === "") {
-      const initialData = fullNames.map(name => ({ 
-        name, 
-        id: nameToIdMap[name] || null 
-      }));
-      setFilteredData(initialData);
-    } else {
-      const lowerQuery = searchQuery.toLowerCase();
-      
-      // name search
-      const nameResults = fullNames.filter(name => 
-        name && name.toLowerCase().includes(lowerQuery)
-      ).map(name => ({ 
-        name, 
-        id: nameToIdMap[name] || null 
-      }));
-      
-      // id search
-      const idResults = Object.entries(idToNameMap)
-        .filter(([id]) => id.toLowerCase().includes(lowerQuery))
-        .map(([id, name]) => ({ name, id }))
-        .filter(item => item.name && !nameResults.some(r => r.name === item.name)); 
-      
-      setFilteredData([...nameResults, ...idResults]);
-    }
-  }, [searchQuery, fullNames, idToNameMap, nameToIdMap]);
-
+export function TopListView({
+  filteredData = [],
+  searchQuery = "",
+  selectedItemIndex = null,
+  resultsInfoMessage = null,
+  onWatchlistPress,
+  onSearchChange,
+  onClearSearch,
+}) {
   const renderItem = ({ item, index }) => {
-    const isSelected = selectedId === index;
-    
+    const isSelected = selectedItemIndex === index;
+
     return (
       <Pressable
         style={({ pressed }) => [
           styles.card,
           pressed ? styles.cardPressed : null,
-          isSelected ? styles.cardSelected : null
+          isSelected ? styles.cardSelected : null,
         ]}
         onPress={() => {
-          setSelectedId(index);
           if (onWatchlistPress) {
-            onWatchlistPress(item.name, item.id);
+            onWatchlistPress(item.name, item.id, index);
           }
         }}
-        android_ripple={{ color: '#333' }}
+        android_ripple={{ color: "#333" }}
       >
         <View style={styles.info}>
           <View style={styles.nameContainer}>
             <Text style={styles.title}>{item.name || "Unknown"}</Text>
             <Text style={styles.sub}>'s watchlist</Text>
           </View>
-          
-          {/* {item.id && (
-            <Text style={styles.userId}>ID: {item.id}</Text>
-          )} */}
-          
+
           {isSelected && (
             <View style={styles.watchlistBadge}>
               <Text style={styles.watchlistText}>Selected</Text>
@@ -91,10 +53,6 @@ export function TopListView({ fullNames = [], idToNameMap = {}, onWatchlistPress
     );
   };
 
-  const clearSearch = () => {
-    setSearchQuery("");
-  };
-
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Top Watchlists</Text>
@@ -105,23 +63,21 @@ export function TopListView({ fullNames = [], idToNameMap = {}, onWatchlistPress
           placeholder="Search by name or ID..."
           placeholderTextColor="#999"
           value={searchQuery}
-          onChangeText={setSearchQuery}
+          onChangeText={onSearchChange}
         />
         {searchQuery.length > 0 && (
-          <TouchableOpacity onPress={clearSearch} style={styles.iconButton}>
+          <TouchableOpacity onPress={onClearSearch} style={styles.iconButton}>
             <Text style={styles.clearButtonText}>×</Text>
           </TouchableOpacity>
         )}
       </View>
 
-      {searchQuery.length > 0 && (
+      {resultsInfoMessage && (
         <View style={styles.resultsInfo}>
-          <Text style={styles.resultsText}>
-            Found {filteredData.length} result{filteredData.length !== 1 ? 's' : ''}
-          </Text>
+          <Text style={styles.resultsText}>{resultsInfoMessage}</Text>
         </View>
       )}
-      
+
       {filteredData.length > 0 ? (
         <FlatList
           data={filteredData}
@@ -133,7 +89,7 @@ export function TopListView({ fullNames = [], idToNameMap = {}, onWatchlistPress
       ) : (
         <Text style={styles.noResults}>No watchlists found</Text>
       )}
-      
+
       <View style={styles.bottomPadding} />
     </View>
   );

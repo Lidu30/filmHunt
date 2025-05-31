@@ -1,158 +1,89 @@
 import {
+  View,
+  Text,
   FlatList,
   Pressable,
-  StyleSheet,
-  Text,
-  View,
   TouchableOpacity,
   ActivityIndicator,
   TextInput,
-  Alert,
+  StyleSheet,
 } from "react-native";
 import { Image } from "expo-image";
-import { useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useState, useCallback, memo } from "react";
-import { reactiveModel } from "../bootstrapping";
+import { RatingStar } from "../components/RatingStar";
 
-const WatchlistItem = memo(({ item, onMovieSelect }) => {
-
-    const router = useRouter();
-  if (!item) return null;
-
+const WatchlistItem = ({
+  item,
+  onPress,
+  onAddToWatchlist,
+  isInWatchlist,
+}) => {
   const posterUrl = item.poster_path
     ? `https://image.tmdb.org/t/p/w200${item.poster_path}`
     : "https://via.placeholder.com/200x300?text=No+Poster";
 
-  const releaseYear = item.release_date
-    ? item.release_date.substring(0, 4)
-    : "N/A";
-
-  const handlePreviewMovie = useCallback(() => {
-    onMovieSelect(item);
-    router.push("/(tabs)/details");
-  }, [item, onMovieSelect]);
-
-  const handleAddToWatchlist = useCallback(() => {
-    if (!reactiveModel.watchlist.some((m) => m.id === item.id)) {
-      reactiveModel.addToWatchlist(item);
-    } else {
-      Alert.alert(
-        "Already in Watchlist",
-        `"${item.title}" is already in your watchlist.`,
-        [{ text: "OK" }],
-        { cancelable: true }
-      );
-    }
-  }, [item]);
-
   return (
-    <Pressable
-      role="button"
-      style={styles.movieContainer}
-      onPress={handlePreviewMovie}
-    >
+    <Pressable style={styles.movieContainer} onPress={() => onPress(item)}>
       <View style={styles.row}>
         <View style={styles.imageContainer}>
-          <Image 
-            style={styles.image} 
-            source={{ uri: posterUrl }} 
-            cachePolicy="memory" // to avoid refetching
-            transition={200}
-          />
+          <Image source={{ uri: posterUrl }} style={styles.image} />
         </View>
-
         <View style={styles.contentContainer}>
           <Text style={styles.movieName} numberOfLines={2}>
             {item.title}
           </Text>
           <View style={styles.detailsRow}>
-            <Text style={styles.sub}>{releaseYear}</Text>
-            <View style={styles.ratingContainer}>
-              <Text style={styles.ratingText}>
-                ⭐{" "}
-                {item.vote_average
-                  ? Math.round(item.vote_average * 10) / 10
-                  : "?"}
-              </Text>
-            </View>
+            <Text style={styles.sub}>
+              {item.release_date?.substring(0, 4) || "N/A"}
+            </Text>
+            <Text style={styles.ratingText}>
+              ⭐ {item.vote_average?.toFixed(1) || "?"}
+            </Text>
           </View>
-          <Text numberOfLines={3} style={styles.overview}>
+          <Text style={styles.overview} numberOfLines={3}>
             {item.overview || "No overview available."}
           </Text>
           <TouchableOpacity
-            style={styles.addButton}
-            onPress={handleAddToWatchlist} 
+            onPress={() => onAddToWatchlist(item)}
+            style={[
+              styles.addButton,
+              isInWatchlist ? styles.addButtonDisabled : styles.addButtonEnabled,
+            ]}
+            disabled={isInWatchlist}
           >
-            <MaterialIcons
-              name="add"
-              size={16}
-              color="white"
-              style={styles.addIcon}
+            <MaterialIcons 
+              name={isInWatchlist ? "check" : "add"} 
+              size={16} 
+              color="#fff" 
             />
-            <Text style={styles.addButtonText}>Add to My Watchlist</Text>
+            <Text style={styles.addButtonText}>
+              {isInWatchlist ? "In Watchlist" : "Add to Watchlist"}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
     </Pressable>
   );
-});
+};
 
-const RatingStar = memo(({ filled, onPress, value }) => (
-  <TouchableOpacity onPress={() => onPress(value)}>
-    <MaterialIcons
-      name={filled ? "star" : "star-border"}
-      size={28}
-      color="#f1c40f"
-    />
-  </TouchableOpacity>
-));
-
-export function UserWatchlistView({
-  userId,
+export const UserWatchlistView = ({
+  loading,
   userName,
   watchlistItems,
-  loading,
+  onMovieSelect,
+  onBack,
+  onAddToWatchlist,
+  showFeedback,
+  toggleFeedback,
+  rating,
+  setRating,
+  comment,
+  setComment,
+  onSubmitFeedback,
   feedbackList,
   averageRating,
-  onMovieSelect,
-  onAddToWatchlist,
-  onSubmitFeedback, 
-  onBack,
-}) {
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
-
-  const handleSetRating = useCallback((value) => {
-    setRating(value);
-  }, []);
-
-  const handleSubmitFeedback = useCallback(() => {
-    if (rating && comment.trim()) {
-      onSubmitFeedback?.(rating, comment);
-      setRating(0);
-      setComment("");
-      setShowFeedback(false);
-    }
-  }, [rating, comment, onSubmitFeedback]);
-
-  const toggleFeedback = useCallback(() => {
-    setShowFeedback(prev => !prev);
-  }, []);
-
-  const handleBackPress = useCallback(() => {
-    if (onBack) {
-      onBack();
-    } else {
-      router.back();
-    }
-  }, [onBack]);
-
-  const keyExtractor = useCallback((item) => 
-    item && item.id ? item.id.toString() : Math.random().toString()
-  , []);
-
+  isInWatchlist,
+}) => {
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -162,18 +93,19 @@ export function UserWatchlistView({
     );
   }
 
-  if (watchlistItems.length === 0) {
+  if (!watchlistItems?.length) {
     return (
       <View style={styles.emptyContainer}>
+        <MaterialIcons name="movie" size={64} color="#666" />
         <Text style={styles.emptyTitle}>
-          {userName || "This user"}'s watchlist is empty
+          {userName ? `${userName}'s watchlist is empty` : "Watchlist is empty"}
         </Text>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={handleBackPress}
-        >
+        <Text style={styles.emptySubtitle}>
+          No movies have been added to this watchlist yet.
+        </Text>
+     <Pressable style={styles.backButton} onPress={onBack}>
           <Text style={styles.backButtonText}>Go Back</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     );
   }
@@ -181,26 +113,35 @@ export function UserWatchlistView({
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity
+        <TouchableOpacity 
+          onPress={onBack} 
           style={styles.backButtonSmall}
-          onPress={handleBackPress}
+          activeOpacity={0.7}
         >
-          <MaterialIcons name="arrow-back" size={22} color="#fff" />
+          <MaterialIcons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
-
         <Text style={styles.watchlistHeader}>
-          {userName ? `${userName}'s Watchlist` : "User Watchlist"}
+          {userName ? `${userName}'s Watchlist` : "Watchlist"}
         </Text>
-
-        <TouchableOpacity onPress={toggleFeedback}>
-          <MaterialIcons name="rate-review" size={24} color="#f1c40f" />
+        <TouchableOpacity 
+          onPress={toggleFeedback} 
+          style={styles.reviewButton}
+          activeOpacity={0.7}
+        >
+          <MaterialIcons 
+            name={showFeedback ? "close" : "rate-review"} 
+            size={24} 
+            color="#f1c40f" 
+          />
         </TouchableOpacity>
       </View>
 
       {averageRating !== null && (
         <View style={styles.avgRatingContainer}>
           <Text style={styles.avgRatingText}>
-            Average Rating: ⭐ {averageRating.toFixed(1)} ({feedbackList?.length || 0} review{feedbackList?.length !== 1 ? 's' : ''})
+            Average Rating: ⭐ {averageRating.toFixed(1)} (
+            {feedbackList?.length || 0} review
+            {feedbackList?.length !== 1 ? "s" : ""})
           </Text>
         </View>
       )}
@@ -210,51 +151,72 @@ export function UserWatchlistView({
           <Text style={styles.feedbackLabel}>Rate this watchlist:</Text>
           <View style={styles.starRow}>
             {[1, 2, 3, 4, 5].map((value) => (
-              <RatingStar 
-                key={value} 
+              <RatingStar
+                key={value}
                 filled={rating >= value}
-                onPress={handleSetRating}
-                value={value}
+                onPress={() => {
+                  console.log("Star clicked:", value); 
+                  setRating(value);
+                }}
               />
             ))}
           </View>
+          <Text style={styles.debugText}>Current rating: {rating}</Text>
           <TextInput
-            placeholder="Leave a comment..."
-            placeholderTextColor="#888"
             style={styles.feedbackInput}
-            value={comment}
-            onChangeText={setComment}
+            placeholder="Leave a comment..."
+            placeholderTextColor="#aaa"
             multiline
+            value={comment}
+            onChangeText={(text) => {
+              console.log("Comment changed:", text); 
+              setComment(text);
+            }}
+            maxLength={500}
           />
-          <TouchableOpacity
-            style={[
-              styles.submitButton,
-              (!rating || !comment.trim()) && styles.submitButtonDisabled
-            ]}
-            onPress={handleSubmitFeedback}
-            disabled={!rating || !comment.trim()}
-          >
-            <Text style={styles.submitButtonText}>Submit</Text>
-          </TouchableOpacity>
+          <Text style={styles.debugText}>Comment length: {comment.length}</Text>
+          <View style={styles.feedbackButtons}>
+            <TouchableOpacity
+              onPress={() => {
+                setRating(0);
+                setComment("");
+                toggleFeedback();
+              }}
+              style={[styles.cancelButton]}
+            >
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={onSubmitFeedback}
+              disabled={!rating || rating === 0 || !comment || !comment.trim()}
+              style={[
+                styles.submitButton,
+                (!rating || rating === 0 || !comment || !comment.trim()) && styles.submitButtonDisabled,
+              ]}
+            >
+              <Text style={styles.submitButtonText}>Submit Review</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
 
       <FlatList
         data={watchlistItems}
+        keyExtractor={(item) => item.id?.toString()}
         renderItem={({ item }) => (
           <WatchlistItem
             item={item}
-            onMovieSelect={onMovieSelect}
+            onPress={onMovieSelect}
+            onAddToWatchlist={onAddToWatchlist}
+            isInWatchlist={isInWatchlist(item.id)}
           />
         )}
-        keyExtractor={keyExtractor}
-        numColumns={1}
         contentContainerStyle={styles.list}
-        
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -265,20 +227,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 8,
+    paddingTop: 50, 
+    paddingBottom: 16,
+    justifyContent: "space-between",
   },
   watchlistHeader: {
     fontSize: 22,
     fontWeight: "bold",
     color: "#fff",
-    marginVertical: 16,
     flex: 1,
     textAlign: "center",
-    marginRight: 30,
   },
   backButtonSmall: {
-    padding: 8,
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  reviewButton: {
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: 'rgba(241, 196, 15, 0.1)',
   },
   loaderContainer: {
     flex: 1,
@@ -302,7 +270,14 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "bold",
     color: "#fff",
-    marginBottom: 12,
+    marginBottom: 8,
+    marginTop: 16,
+    textAlign: "center",
+  },
+  emptySubtitle: {
+    fontSize: 16,
+    color: "#aaa",
+    marginBottom: 24,
     textAlign: "center",
   },
   backButton: {
@@ -319,7 +294,7 @@ const styles = StyleSheet.create({
   },
   list: {
     padding: 10,
-    paddingBottom:70,
+    paddingBottom: 70,
   },
   movieContainer: {
     backgroundColor: "#222",
@@ -338,18 +313,18 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     padding: 12,
-    alignItems: "center",
+    alignItems: "flex-start",
   },
   imageContainer: {
     width: 80,
     height: 120,
-    borderRadius: 4,
+    borderRadius: 8,
     overflow: "hidden",
   },
   image: {
     width: "100%",
     height: "100%",
-    borderRadius: 4,
+    borderRadius: 8,
   },
   contentContainer: {
     flex: 1,
@@ -377,12 +352,7 @@ const styles = StyleSheet.create({
     color: "#aaa",
     fontSize: 14,
     lineHeight: 20,
-  },
-  ratingContainer: {
-    backgroundColor: "rgba(255, 193, 7, 0.2)",
-    paddingVertical: 3,
-    paddingHorizontal: 8,
-    borderRadius: 6,
+    marginBottom: 12,
   },
   ratingText: {
     color: "#FFC107",
@@ -390,54 +360,68 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   addButton: {
-    backgroundColor: "#0055AA",
     flexDirection: "row",
-    paddingVertical: 6,
+    paddingVertical: 8,
     paddingHorizontal: 12,
-    borderRadius: 4,
-    marginTop: 16,
+    borderRadius: 6,
     alignItems: "center",
     justifyContent: "center",
+    alignSelf: "flex-start",
   },
-  addIcon: {
-    marginRight: 6,
+  addButtonEnabled: {
+    backgroundColor: "#0055AA",
+  },
+  addButtonDisabled: {
+    backgroundColor: "#444",
   },
   addButtonText: {
     fontSize: 14,
     color: "#fff",
     fontWeight: "bold",
+    marginLeft: 4,
   },
   feedbackForm: {
-    paddingHorizontal: 16,
-    paddingBottom: 12,
     backgroundColor: "#1a1a1a",
     marginHorizontal: 10,
     marginBottom: 10,
     borderRadius: 8,
-    padding: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: "#333",
   },
   feedbackLabel: {
     color: "#fff",
     fontSize: 16,
-    marginBottom: 8,
+    marginBottom: 12,
+    fontWeight: "600",
   },
   starRow: {
     flexDirection: "row",
-    marginBottom: 10,
+    marginBottom: 16,
+    justifyContent: "flex-start",
   },
   feedbackInput: {
-    backgroundColor: "#1e1e1e",
+    backgroundColor: "#2a2a2a",
     color: "#fff",
-    padding: 10,
-    borderRadius: 6,
-    minHeight: 60,
-    marginBottom: 10,
+    padding: 12,
+    borderRadius: 8,
+    minHeight: 80,
+    marginBottom: 16,
+    textAlignVertical: "top",
+    borderWidth: 1,
+    borderColor: "#444",
+  },
+  feedbackButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 12,
   },
   submitButton: {
     backgroundColor: "#3498db",
-    padding: 10,
+    padding: 12,
     borderRadius: 6,
     alignItems: "center",
+    flex: 1,
   },
   submitButtonDisabled: {
     backgroundColor: "#2c3e50",
@@ -446,17 +430,36 @@ const styles = StyleSheet.create({
   submitButtonText: {
     color: "#fff",
     fontWeight: "bold",
+    fontSize: 16,
+  },
+  cancelButton: {
+    backgroundColor: "#e74c3c",
+    padding: 12,
+    borderRadius: 6,
+    alignItems: "center",
+    flex: 1,
+  },
+  cancelButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
   },
   avgRatingContainer: {
     backgroundColor: "#1a1a1a",
-    paddingVertical: 8,
+    paddingVertical: 12,
     paddingHorizontal: 16,
     marginBottom: 6,
+    marginHorizontal: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#333",
   },
   avgRatingText: {
     color: "#f1c40f",
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "600",
     textAlign: "center",
   },
 });
+
+export default UserWatchlistView;

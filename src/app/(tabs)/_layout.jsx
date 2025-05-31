@@ -1,4 +1,4 @@
-import { ActivityIndicator, View, StyleSheet, Text } from "react-native";
+import { ActivityIndicator, View, StyleSheet } from "react-native";
 import { Tabs } from "expo-router";
 import { observer } from "mobx-react-lite";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -6,7 +6,8 @@ import { reactiveModel } from "../../bootstrapping.js";
 import { CustomTabBar } from "../../components/CustomTabBar";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Toast from "react-native-toast-message"; 
 
 export default observer(function RootLayout() {
   return (
@@ -29,28 +30,38 @@ export default observer(function RootLayout() {
             name="watchList"
             options={{
               title: "WatchList",
-              tabBarIcon: () => <MaterialCommunityIcons name="playlist-star" size={30} color="white" />,
+              tabBarIcon: () => (
+                <MaterialCommunityIcons
+                  name="playlist-star"
+                  size={30}
+                  color="white"
+                />
+              ),
             }}
           />
           <Tabs.Screen
             name="details"
             options={{
               title: "Details",
-              tabBarIcon: () => <MaterialIcons name="movie-filter" size={24} color="white" />,
+              tabBarIcon: () => (
+                <MaterialIcons name="movie-filter" size={24} color="white" />
+              ),
             }}
           />
           <Tabs.Screen
             name="reviewedMovies"
             options={{
               title: "Reviews",
-              tabBarIcon: () => <MaterialIcons name="rate-review" size={24} color="white" />,
+              tabBarIcon: () => (
+                <MaterialIcons name="rate-review" size={24} color="white" />
+              ),
             }}
           />
           <Tabs.Screen
             name="profile"
             options={{
               title: "User Profile",
-              tabBarIcon: ({ color, size }) => (
+              tabBarIcon: () => (
                 <MaterialIcons
                   name="manage-accounts"
                   size={26}
@@ -62,7 +73,7 @@ export default observer(function RootLayout() {
           <Tabs.Screen
             name="toplist"
             options={{
-              title: "toplist",
+              title: "Toplist",
               tabBarIcon: () => (
                 <MaterialIcons name="leaderboard" size={24} color="white" />
               ),
@@ -74,6 +85,7 @@ export default observer(function RootLayout() {
             <ActivityIndicator size="large" color="#fff" />
           </View>
         )}
+        <Toast />
       </View>
     </SafeAreaProvider>
   );

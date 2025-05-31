@@ -31,16 +31,13 @@ global.doc = doc
 global.setDoc = setDoc
 global.db = db
 
-// Try to initialize auth with persistence, fallback to regular auth if it fails
 let auth;
 try {
-  // For React Native environments
   const { getReactNativePersistence } = require("firebase/auth");
   auth = initializeAuth(app, {
     persistence: getReactNativePersistence(AsyncStorage),
   });
 } catch (error) {
-  // Fallback for web or other environments
   console.warn("React Native persistence not available, using default auth:", error.message);
   auth = getAuth(app);
 }
@@ -54,7 +51,7 @@ export function connectToPersistence(reactiveModel, watchFunction) {
   onAuthStateChanged(auth, (user) => {
     if (!user) {
       console.warn("User not authenticated, skipping Firestore sync")
-      // Set default values for unauthenticated users
+      // Sdefulat
       reactiveModel.watchlist = []
       reactiveModel.userDetails = {
         id: null,
@@ -120,10 +117,9 @@ export function connectToPersistence(reactiveModel, watchFunction) {
 }
 
 export async function signIn(email, password) {
-  reactiveModel.clearModel()
+  /* reactiveModel.clearModel() */
   return signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      reactiveModel.clearModel()
       console.log("Signed in:", userCredential.user)
       router.push("/profile")
       return userCredential.user
@@ -159,8 +155,6 @@ export function logout() {
   return signOut(auth)
     .then(() => {
       console.log("Signed out")
-      reactiveModel.userDetails = { id: null, name: "", email: "", phone: "" }
-      reactiveModel.watchlist = []
       reactiveModel.clearModel()
       reactiveModel.ready = false
     })
