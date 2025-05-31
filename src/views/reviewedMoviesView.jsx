@@ -14,7 +14,8 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { LinearGradient } from "expo-linear-gradient";
 import { reactiveModel } from "../bootstrapping";
 
-export function ReviewedMoviesView({ reviewedMovies, loading, onMovieSelect, onAddToWatchlist }) {
+export function ReviewedMoviesView(props) {
+  const { reviewedMovies, loading, onMovieSelect, onAddToWatchlist } = props;
   const router = useRouter();
 
   function renderReviewedMovieItem({ item }) {
@@ -69,16 +70,6 @@ export function ReviewedMoviesView({ reviewedMovies, loading, onMovieSelect, onA
               <Text style={styles.sub}>
                 {releaseYear}
               </Text>
-              <LinearGradient
-                colors={['#4c669f','#3b5998','#192f6a']}
-                start={{ x: 0, y: 1 }}
-                end={{ x: 0, y: 0 }}
-                style={styles.ratingGradient}
-              >
-                <Text style={styles.ratingTextGradient}>
-                  ⭐ {item.averageRating ? item.averageRating.toFixed(1) : "No ratings"}
-                </Text>
-              </LinearGradient>
             </View>
             
             <Text style={styles.reviewsInfo}>
@@ -147,11 +138,7 @@ export function ReviewedMoviesView({ reviewedMovies, loading, onMovieSelect, onA
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Movies Reviewed by Users</Text>
-      <Text style={styles.subHeader}>
-        Sorted by highest rating • {reviewedMovies.length} movie{reviewedMovies.length !== 1 ? 's' : ''}
-      </Text>
-      
+      <Text style={styles.header}>Movies Reviewed by Filmhunt users</Text>
       <FlatList
         data={reviewedMovies}
         renderItem={renderReviewedMovieItem}

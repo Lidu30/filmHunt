@@ -132,12 +132,7 @@ export function DetailsView(props) {
             {props.currentMovieReviews && props.currentMovieReviews.length > 0 && (
                 <View style={styles.container}>
                     <View style={styles.reviewsHeader}>
-                        <Text style={styles.subHeader}>User Reviews</Text>
-                        {props.currentMovieAverageRating && (
-                            <Text style={styles.averageRating}>
-                                ⭐ {props.currentMovieAverageRating.toFixed(1)} avg
-                            </Text>
-                        )}
+                        <Text style={styles.subHeader}>Filmhunt user Reviews</Text>
                     </View>
                     
                     {props.currentMovieReviews.map((review, index) => (
@@ -145,7 +140,7 @@ export function DetailsView(props) {
                             <View style={styles.reviewHeader}>
                                 <Text style={styles.reviewerName}>{review.userName || "Anonymous"}</Text>
                                 {review.rating && (
-                                    <Text style={styles.reviewRating}>⭐ {review.rating}</Text>
+                                    <Text style={styles.reviewRating}>⭐  {review.rating}/5</Text>
                                 )}
                             </View>
                             {review.comment && (
