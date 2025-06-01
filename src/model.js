@@ -1,4 +1,4 @@
-import { getAllGenreNames, getCast, getStreamingPlatforms, getSimilarMovies } from './apiConfig'
+import { getAllGenreNames, getCast, getStreamingPlatforms, getSimilarMovies, getMovieDetails } from './apiConfig'
 const model = {
 // user info for authentication
   userDetails: {
@@ -21,10 +21,27 @@ const model = {
   currentMovieAverageRating: null,
   recommendations: [],
   loadingRecommendations: false,
-
+  loadingReviewedMovies: false,
   
+  async loadReviewedMovies() {
+    this.loadingReviewedMovies = true;
+    try {
+      const { getAllReviewedMovies } = await import('./firestoreModel');
+      this.reviewedMovies = await getAllReviewedMovies();
+    } catch (error) {
+      console.error("Error loading reviewed movies:", error);
+      this.reviewedMovies = [];
+    } finally {
+      this.loadingReviewedMovies = false;
+    }
+  },
+
   async loadRecommendations() {
+    console.log("Loading recommendations...");
+    console.log("Current watchlist:", this.watchlist);
+    
     if (this.watchlist.length === 0) {
+      console.log("Watchlist is empty, clearing recommendations");
       this.recommendations = [];
       return;
     }
@@ -32,24 +49,64 @@ const model = {
     this.loadingRecommendations = true;
     
     try {
-      const sortedByRating = [...this.watchlist].sort((a, b) => 
-        (b.vote_average) - (a.vote_average)
-      );
-      const sourceMovie = sortedByRating[0];
+      // Sort by vote_average with proper fallback
+      const sortedByRating = [...this.watchlist].sort((a, b) => {
+        const ratingA = a.vote_average || 0;
+        const ratingB = b.vote_average || 0;
+        return ratingB - ratingA;
+      });
       
-      const similarMovies = await getSimilarMovies(sourceMovie.id);
+      const sourceMovie = sortedByRating[0];
+      console.log("Using source movie for recommendations:", sourceMovie.title);
+      
+      const similarMoviesResponse = await getSimilarMovies(sourceMovie.id);
+      console.log("Similar movies response:", similarMoviesResponse);
+      
+      if (!similarMoviesResponse || !similarMoviesResponse.results || !Array.isArray(similarMoviesResponse.results)) {
+        console.log("No valid similar movies response");
+        this.recommendations = [];
+        return;
+      }
       
       const watchlistIds = this.watchlist.map(m => m.id);
-      const filteredRecommendations = similarMovies.results.filter(
-        movie => !watchlistIds.includes(movie.id)
+      const filteredRecommendations = similarMoviesResponse.results.filter(
+        movie => movie && !watchlistIds.includes(movie.id)
       ).slice(0, 30);
       
+      console.log("Filtered recommendations:", filteredRecommendations.length);
       this.recommendations = filteredRecommendations;
+      
     } catch (error) {
       console.error("Error getting recommendations:", error);
       this.recommendations = [];
     } finally {
       this.loadingRecommendations = false;
+      console.log("Recommendations loading finished. Count:", this.recommendations.length);
+    }
+  },
+
+  async setCurrentMovieFromReview(movieData) {
+    try {
+      const movie = {
+        id: movieData.movieId,
+        title: movieData.movieTitle,
+        poster_path: movieData.moviePosterPath,
+        release_date: movieData.movieReleaseDate,
+        overview: movieData.movieOverview,
+      };
+      
+      
+      let fullMovieDetails;
+      try {
+        fullMovieDetails = await getMovieDetails(movie.id);
+      } catch (error) {
+        console.warn("Could not fetch full movie details, using stored data:", error);
+        fullMovieDetails = movie;
+      }
+      
+      this.setCurrentMovie(fullMovieDetails);
+    } catch (error) {
+      console.error("Error selecting movie:", error);
     }
   },
  

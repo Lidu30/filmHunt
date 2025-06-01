@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { WatchListView } from "../views/watchListView";
-// import { getSimilarMovies } from "../apiConfig";
+
 
 export const WatchList = observer(function WatchList(props) {
   useEffect(() => {
