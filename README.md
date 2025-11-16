@@ -1,4 +1,5 @@
 # vt25-Project - FilmHunt
+This is a project for the course DD2216 Developing Mobile Applications
 
 ### Project description
 FilmHunt is an app where users can search for movie suggestions personalized to their interests. Each user has a watchlist, where they can add movies they want to watch. To add a film to their watchlist, the user can either search for a specific film directly or browse through a database of movies. For each movie, the user can see information such as a synopsis, movie rating, genres, cast, as well as which streaming platforms the film is available on (in Sweden). Watchlists are public, so users can browse through other users' watchlists and from there add movies to their own watchlist.
